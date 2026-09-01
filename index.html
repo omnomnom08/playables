@@ -363,17 +363,12 @@ section[id],header[id]{scroll-margin-top:84px}
   background-repeat:no-repeat;background-size:130% 130%;background-position:100% 100%;
   transition:transform .38s var(--e),box-shadow .38s var(--e),border-color .3s,
              background-size .65s var(--e)}
-.st:hover{background-size:210% 210%}
 .st::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:var(--sc);
   border-radius:17px 17px 0 0}
-.st .k{color:var(--sc)}
-.st h4 span{color:var(--sc)}
-.st p b{color:var(--sc)}
 .st1{--sc:#0a7d92;--scl:rgba(10,125,146,.17)}
 .st2{--sc:#b8981a;--scl:rgba(201,169,31,.24)}
 .st3{--sc:#d1603d;--scl:rgba(209,96,61,.17)}
 .st4{--sc:#2f8f5b;--scl:rgba(47,143,91,.17)}
-.st .k{text-transform:uppercase}
 /* key phrases get the card's colour plus a marker swipe behind them */
 .st p b{color:var(--sc);font-weight:650;
   background:linear-gradient(to top,var(--scl) 42%,transparent 42%);
@@ -389,8 +384,9 @@ section[id],header[id]{scroll-margin-top:84px}
 .st:hover .circ path,.st:focus-within .circ path{stroke-dashoffset:0;
   transition:stroke-dashoffset .95s cubic-bezier(.45,.05,.3,1)}
 .st:hover{transform:translateY(-6px);border-color:var(--sc);z-index:4;
-  box-shadow:0 16px 34px rgba(20,21,26,.11)}
-.st .k{font-family:ui-monospace,Consolas,monospace;font-size:11px;letter-spacing:1px;font-weight:700}
+  background-size:210% 210%;box-shadow:0 16px 34px rgba(20,21,26,.11)}
+.st .k{font-family:ui-monospace,Consolas,monospace;font-size:11px;letter-spacing:1px;
+  font-weight:700;text-transform:uppercase;color:var(--sc)}
 .st h4{position:relative;margin:13px 0 9px;font-size:16.5px;font-weight:640;letter-spacing:-.02em}
 .st p{position:relative;margin:0;font-size:14px;color:var(--mid);line-height:1.62}
 .st p b{color:var(--ink);font-weight:600}
@@ -521,12 +517,12 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
 <header class="hero" id="top">
   <div class="wrap hgrid">
 
-    <div class="hcopy">
+    <div>
       <div class="kick fx"><b></b>Hey — I'm Daria <span class="wv">👋</span></div>
       <h1>
         <span class="ln"><span>I make ads</span></span>
         <span class="ln"><span>you can
-          <em class="mark">actually play<svg class="uline" viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true"><path vector-effect="non-scaling-stroke" d="M6 16C58 7 112 5 164 8c42 2 84 7 130 3"/></svg></em>.</span></span>
+          <em>actually play<svg class="uline" viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true"><path vector-effect="non-scaling-stroke" d="M6 16C58 7 112 5 164 8c42 2 84 7 130 3"/></svg></em>.</span></span>
       </h1>
       <p class="lede fx">
         Five years in mobile games. I do the visual side — scene assembly, animation, VFX,
@@ -664,7 +660,7 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
 
 <section class="ct" id="contact">
   <div class="wrap ctgrid">
-    <div class="ctcopy">
+    <div>
       <h2 class="fx">Let's make<br>something <em>playable</em>.</h2>
       <p class="sub fx">Open to technical artist roles where the pipeline is part of the job,
          not a favour I do on the side.</p>
