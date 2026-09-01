@@ -147,12 +147,6 @@ h1 em{font-style:normal;color:var(--ac);position:relative;white-space:nowrap}
 @keyframes morph{
   50%{border-radius:46% 54% 55% 45%/48% 46% 54% 52%;transform:rotate(-3deg) scale(1.03)}}
 @keyframes spin{to{transform:rotate(360deg)}}
-.hpic .sticker{position:absolute;z-index:3;right:2%;top:12%;
-  background:var(--ink);color:var(--pa);font-size:15px;font-weight:700;line-height:1.15;
-  padding:12px 15px;border-radius:12px;text-align:center;transform:rotate(7deg);
-  box-shadow:0 8px 20px rgba(20,21,26,.24)}
-.hpic .sticker i{font-style:normal;font-size:10px;font-weight:500;opacity:.7;
-  letter-spacing:.6px}
 @media(max-width:939px){
   .hpic{margin-top:10px}
   .sfig{max-width:300px}
@@ -215,6 +209,19 @@ h1 em{font-style:normal;color:var(--ac);position:relative;white-space:nowrap}
 .rhint{position:absolute;z-index:1;right:14px;top:16px;
   font-family:"Caveat","Segoe Script",cursive;font-size:16px;color:var(--dim);
   transform:rotate(-6deg);opacity:.8}
+
+.hside{display:flex;flex-direction:column;gap:14px}
+.sdesc{position:relative;min-height:6.6em;text-align:center;padding:0 6px}
+.sdesc p{position:absolute;inset:0;margin:0;font-size:14.5px;line-height:1.62;
+  color:var(--mid);opacity:0;transform:translateY(8px);
+  transition:opacity .42s var(--e),transform .42s var(--e)}
+.sdesc .dh{color:var(--dim);font-family:"Caveat","Segoe Script",cursive;font-size:19px;
+  line-height:1.35;display:flex;align-items:center;justify-content:center}
+.sdesc[data-state=""] .dh,
+.sdesc:not([data-state]) .dh{opacity:1;transform:none}
+.sdesc[data-state="a"] .da{opacity:1;transform:none}
+.sdesc[data-state="b"] .db{opacity:1;transform:none}
+@media(max-width:939px){.sdesc{min-height:7.8em}}
 
 /* ── section heads ───────────────────────────────────── */
 section{padding:88px 0 0}
@@ -397,14 +404,6 @@ section[id],header[id]{scroll-margin-top:84px}
 .slab.lb.on{transform:translateY(-5px) scale(1.06);
   border-color:var(--ac);box-shadow:0 4px 0 var(--ac)}
 
-/* artist / engineer pair inside About */
-.duo{display:grid;gap:24px;grid-template-columns:1fr;margin-top:30px;padding-top:26px;
-  border-top:1px solid var(--rule)}
-@media(min-width:620px){.duo{grid-template-columns:1fr 1fr;gap:32px}}
-.duo h4{margin:0 0 8px;font-size:19px;font-weight:740;letter-spacing:-.03em}
-.duo div:first-child h4{color:var(--yed)}
-.duo div:last-child h4{color:var(--ac);font-family:ui-monospace,Consolas,monospace;font-size:16px}
-.duo p{margin:0;font-size:14.5px;color:var(--mid);line-height:1.65}
 
 /* ── about ───────────────────────────────────────────── */
 .ab{display:grid;gap:38px;grid-template-columns:1fr;align-items:start}
@@ -496,7 +495,7 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
       <p class="lede fx">
         I'm a technical artist — five years in mobile games, most of it where art meets
         engineering. I build the creative <b>and</b> the pipeline that produces it, at
-        <b>12–13 playables a month</b>, every one under the 5 MB ceiling.
+        <b>12–13 playables a month</b>.
       </p>
       <div class="cta fx">
         <a class="btn pri" href="#work">Play my work <span class="ar">↓</span></a>
@@ -511,18 +510,26 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
       </div>
     </div>
 
-    <div class="hpic fx">
-      <span class="ring"></span>
-      <figure class="sfig">
-        <span class="sh a"><img src="assets/daria-art.webp"
-              alt="Daria Shchipanova, painted" width="760" height="1026"></span>
-        <span class="sh b"><img src="assets/daria-code.webp"
-              alt="Daria Shchipanova, rendered in ASCII characters"
-              width="760" height="1026"></span>
-        <figcaption class="slab la">artist</figcaption>
-        <figcaption class="slab lb">&lt;engineer&gt;</figcaption>
-      </figure>
-      <span class="sticker">5&nbsp;MB<br><i>every time</i></span>
+    <div class="hside fx">
+      <div class="hpic">
+        <span class="ring"></span>
+        <figure class="sfig">
+          <span class="sh a"><img src="assets/daria-art.webp"
+                alt="Daria Shchipanova, painted" width="760" height="1026"></span>
+          <span class="sh b"><img src="assets/daria-code.webp"
+                alt="Daria Shchipanova, rendered in ASCII characters"
+                width="760" height="1026"></span>
+          <figcaption class="slab la">artist</figcaption>
+          <figcaption class="slab lb">&lt;engineer&gt;</figcaption>
+        </figure>
+      </div>
+      <div class="sdesc" id="sdesc">
+        <p class="dh">Two halves of the same job. Move across the page.</p>
+        <p class="da">3D, VFX, UI and animation. I model it, light it, rig it and make it
+           move — then cut it down until it fits the budget.</p>
+        <p class="db">Tooling, shaders and pipeline. JavaScript, Electron and Blender
+           scripting, because the repetitive half shouldn't be done by hand.</p>
+      </div>
     </div>
 
   </div>
@@ -606,18 +613,6 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
         <p class="aside">My degree is in <b>optics engineering</b>, which turns out to be a
           reasonable way into rendering.</p>
 
-        <div class="duo">
-          <div>
-            <h4>artist</h4>
-            <p>3D, VFX, UI and animation. I model it, light it, rig it and make it move —
-               then cut it down until it fits the budget.</p>
-          </div>
-          <div>
-            <h4>&lt;engineer&gt;</h4>
-            <p>Tooling, shaders and pipeline. JavaScript, Electron and Blender scripting,
-               because the repetitive half shouldn't be done by hand.</p>
-          </div>
-        </div>
       </div>
 
       <aside class="gm">
@@ -955,15 +950,30 @@ var PLAYABLES = [
     if (!fig || reduce) return;
     if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     var la = fig.querySelector(".la"), lb = fig.querySelector(".lb"),
-        target = 50, cur = 50, raf = 0;
+        desc = document.getElementById("sdesc"),
+        target = 50, cur = 50, raf = 0, state = "";
+
+    /* hysteresis — a dead band round the middle so the copy can't
+       flicker while the cursor sits near centre */
+    function side(v) {
+      if (state === "a") return v < 48 ? (v < 44 ? "b" : "") : "a";
+      if (state === "b") return v > 52 ? (v > 56 ? "a" : "") : "b";
+      return v > 56 ? "a" : v < 44 ? "b" : "";
+    }
 
     function tick() {
       cur += (target - cur) * .075;
       fig.style.setProperty("--seam", cur.toFixed(2) + "%");
-      if (la) la.classList.toggle("on", cur > 56);
-      if (lb) lb.classList.toggle("on", cur < 44);
+      var s = side(cur);
+      if (s !== state) {
+        state = s;
+        if (desc) desc.dataset.state = s;
+        if (la) la.classList.toggle("on", s === "a");
+        if (lb) lb.classList.toggle("on", s === "b");
+      }
       raf = Math.abs(target - cur) > .05 ? requestAnimationFrame(tick) : 0;
     }
+    if (desc) desc.dataset.state = "";
     addEventListener("mousemove", function (e) {
       /* cursor left of the page -> the painting wins; right -> the ASCII wins */
       target = 80 - (e.clientX / innerWidth) * 60;
