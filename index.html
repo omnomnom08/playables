@@ -140,18 +140,12 @@ h1 em{font-style:normal;color:var(--ac);position:relative;white-space:nowrap}
 
 /* cut-out portrait */
 .hpic{position:relative;display:flex;justify-content:center;align-items:flex-end;
-  min-height:340px}
-.hpic img{position:relative;z-index:2;width:100%;max-width:400px;height:auto;
-  filter:drop-shadow(0 22px 34px rgba(20,21,26,.20))}
-.hpic .blob{position:absolute;z-index:1;width:86%;max-width:400px;aspect-ratio:1/1.06;
-  bottom:0;background:var(--ye);opacity:.9;
-  border-radius:52% 48% 46% 54%/56% 52% 48% 44%;
-  animation:morph 13s ease-in-out infinite}
-@keyframes morph{
-  50%{border-radius:46% 54% 55% 45%/48% 46% 54% 52%;transform:rotate(-3deg) scale(1.03)}}
-.hpic .ring{position:absolute;z-index:0;width:96%;max-width:440px;aspect-ratio:1;
+  min-height:360px}
+.hpic .ring{position:absolute;z-index:0;width:96%;max-width:460px;aspect-ratio:1;
   bottom:-6%;border:2px dashed var(--rule2);border-radius:50%;
   animation:spin 60s linear infinite}
+@keyframes morph{
+  50%{border-radius:46% 54% 55% 45%/48% 46% 54% 52%;transform:rotate(-3deg) scale(1.03)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 .hpic .sticker{position:absolute;z-index:3;right:2%;top:12%;
   background:var(--ink);color:var(--pa);font-size:15px;font-weight:700;line-height:1.15;
@@ -160,9 +154,8 @@ h1 em{font-style:normal;color:var(--ac);position:relative;white-space:nowrap}
 .hpic .sticker i{font-style:normal;font-size:10px;font-weight:500;opacity:.7;
   letter-spacing:.6px}
 @media(max-width:939px){
-  .hpic{margin-top:8px}
-  .hpic img{max-width:290px}
-  .hpic .blob{max-width:290px}
+  .hpic{margin-top:10px}
+  .sfig{max-width:300px}
   .hpic .ring{display:none}
 }
 
@@ -349,50 +342,53 @@ section[id],header[id]{scroll-margin-top:84px}
 .st p{position:relative;margin:0;font-size:14px;color:var(--mid);line-height:1.62}
 .st p b{color:var(--ink);font-weight:600}
 
-/* ── about: split portrait ───────────────────────────── */
-.split{display:grid;gap:26px;grid-template-columns:1fr;align-items:center;
-  margin-bottom:56px;text-align:center}
-@media(min-width:900px){
-  .split{grid-template-columns:1fr auto 1fr;gap:40px}
-  .split .left{text-align:right}
-  .split .right{text-align:left}
-}
-.sl h3{margin:0;font-size:clamp(30px,4.4vw,46px);font-weight:760;letter-spacing:-.04em;
-  line-height:1}
-.split .left h3{color:var(--yed)}
-.split .right h3{color:var(--ac);font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
-  font-size:clamp(24px,3.4vw,36px);letter-spacing:-.02em}
-.sl p{margin:14px 0 0;font-size:14.5px;color:var(--mid);line-height:1.65;max-width:34ch}
-.split .left p{margin-left:auto}
-.split .right p{margin-right:auto}
 
 /* Two cut-out portraits of the same photo — one painted, one drawn in
-   ASCII — masked to opposite halves with an overlapping soft edge, so
-   they dissolve into one another rather than meeting at a hard line.
-   --seam is registered below so the crossfade can actually animate. */
+   ASCII — masked to opposite halves with an overlapping soft edge so
+   they dissolve into each other. --seam is registered with @property,
+   otherwise a custom property inside mask-image snaps instead of animating. */
 @property --seam{syntax:"<percentage>";initial-value:50%;inherits:true}
-.sfig{position:relative;margin:0;width:min(340px,76vw);aspect-ratio:760/1026;
-  justify-self:center;--seam:50%;
-  transition:--seam .6s var(--e);
+.sfig{position:relative;margin:0;width:100%;max-width:420px;aspect-ratio:760/1026;
+  --seam:50%;transition:--seam .6s var(--e);
   filter:drop-shadow(0 18px 26px rgba(20,21,26,.14))}
 .sfig::before{content:"";position:absolute;z-index:0;left:50%;bottom:1%;
   width:112%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;
-  background:radial-gradient(circle at 32% 46%,rgba(245,215,66,.30),transparent 60%),
-             radial-gradient(circle at 70% 50%,rgba(10,125,146,.20),transparent 60%)}
+  background:radial-gradient(circle at 32% 46%,rgba(245,215,66,.32),transparent 60%),
+             radial-gradient(circle at 70% 50%,rgba(10,125,146,.22),transparent 60%)}
 .sh{position:absolute;inset:0;z-index:1}
 .sh img{width:100%;height:100%;object-fit:contain;display:block}
 .sh.a{-webkit-mask-image:linear-gradient(to right,#000 calc(var(--seam) - 9%),transparent calc(var(--seam) + 9%));
               mask-image:linear-gradient(to right,#000 calc(var(--seam) - 9%),transparent calc(var(--seam) + 9%))}
 .sh.b{-webkit-mask-image:linear-gradient(to right,transparent calc(var(--seam) - 9%),#000 calc(var(--seam) + 9%));
               mask-image:linear-gradient(to right,transparent calc(var(--seam) - 9%),#000 calc(var(--seam) + 9%))}
-.split:has(.left:hover) .sfig,.split:has(.left:focus-within) .sfig{--seam:76%}
-.split:has(.right:hover) .sfig,.split:has(.right:focus-within) .sfig{--seam:24%}
-.sl{transition:transform .4s var(--e)}
-.split:has(.left:hover) .left,.split:has(.right:hover) .right{transform:translateY(-3px)}
-@media(max-width:899px){
-  .sl p{margin-left:auto;margin-right:auto}
-  .sfig{order:-1}
-}
+
+/* the whole half is the target, not just the label */
+.zone{position:absolute;z-index:3;top:-6%;bottom:-6%;width:60%}
+.zone.l{left:-14%}
+.zone.r{right:-14%}
+.sfig:has(.zone.l:hover){--seam:78%}
+.sfig:has(.zone.r:hover){--seam:22%}
+
+.slab{position:absolute;z-index:4;bottom:3%;font-size:13px;font-weight:700;
+  letter-spacing:.4px;padding:6px 13px;border-radius:99px;background:#fff;
+  border:1px solid var(--rule2);box-shadow:0 2px 0 var(--rule2);
+  transition:transform .4s var(--e),color .4s,border-color .4s,box-shadow .4s}
+.slab.la{left:-4%;color:var(--yed)}
+.slab.lb{right:-4%;color:var(--ac);font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.sfig:has(.zone.l:hover) .la{transform:translateY(-5px) scale(1.06);
+  border-color:var(--ye);box-shadow:0 4px 0 var(--yed)}
+.sfig:has(.zone.r:hover) .lb{transform:translateY(-5px) scale(1.06);
+  border-color:var(--ac);box-shadow:0 4px 0 var(--ac)}
+@media(max-width:939px){.zone{width:52%}.zone.l{left:-4%}.zone.r{right:-4%}}
+
+/* artist / engineer pair inside About */
+.duo{display:grid;gap:24px;grid-template-columns:1fr;margin-top:30px;padding-top:26px;
+  border-top:1px solid var(--rule)}
+@media(min-width:620px){.duo{grid-template-columns:1fr 1fr;gap:32px}}
+.duo h4{margin:0 0 8px;font-size:19px;font-weight:740;letter-spacing:-.03em}
+.duo div:first-child h4{color:var(--yed)}
+.duo div:last-child h4{color:var(--ac);font-family:ui-monospace,Consolas,monospace;font-size:16px}
+.duo p{margin:0;font-size:14.5px;color:var(--mid);line-height:1.65}
 
 /* ── about ───────────────────────────────────────────── */
 .ab{display:grid;gap:38px;grid-template-columns:1fr;align-items:start}
@@ -422,6 +418,16 @@ section[id],header[id]{scroll-margin-top:84px}
 
 /* ── contact ─────────────────────────────────────────── */
 .ct{padding:110px 0 30px}
+.ctgrid{display:grid;gap:34px;grid-template-columns:1fr;align-items:end}
+@media(min-width:900px){.ctgrid{grid-template-columns:1.25fr .75fr;gap:50px}}
+.ctpic{position:relative;display:flex;justify-content:center;align-items:flex-end}
+.ctpic img{position:relative;z-index:2;width:100%;max-width:330px;height:auto;
+  filter:drop-shadow(0 20px 30px rgba(20,21,26,.18))}
+.ctpic .blob{position:absolute;z-index:1;width:88%;max-width:330px;aspect-ratio:1/1.06;
+  bottom:0;background:var(--ye);opacity:.85;
+  border-radius:52% 48% 46% 54%/56% 52% 48% 44%;
+  animation:morph 13s ease-in-out infinite}
+@media(max-width:899px){.ctpic{order:-1}.ctpic img{max-width:250px}}
 .ct h2{margin:0;font-size:clamp(32px,6.6vw,78px);font-weight:660;letter-spacing:-.05em;line-height:.98}
 .ct h2 em{font-style:normal;color:var(--ac)}
 .ct .sub{margin:24px 0 0;color:var(--mid);max-width:44ch;font-size:17px}
@@ -490,9 +496,18 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
     </div>
 
     <div class="hpic fx">
-      <span class="blob"></span>
       <span class="ring"></span>
-      <img src="assets/daria-cutout.webp" alt="Daria Shchipanova" width="820" height="1045">
+      <figure class="sfig">
+        <span class="sh a"><img src="assets/daria-art.webp"
+              alt="Daria Shchipanova, painted" width="760" height="1026"></span>
+        <span class="sh b"><img src="assets/daria-code.webp"
+              alt="Daria Shchipanova, rendered in ASCII characters"
+              width="760" height="1026"></span>
+        <span class="zone l" aria-hidden="true"></span>
+        <span class="zone r" aria-hidden="true"></span>
+        <figcaption class="slab la">artist</figcaption>
+        <figcaption class="slab lb">&lt;engineer&gt;</figcaption>
+      </figure>
       <span class="sticker">5&nbsp;MB<br><i>every time</i></span>
     </div>
 
@@ -566,28 +581,6 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
 <section id="about">
   <div class="wrap">
     <div class="shd fx"><span class="n">03</span><h2>About</h2></div>
-    <div class="split fx">
-      <div class="sl left">
-        <h3>artist</h3>
-        <p>3D, VFX, UI and animation. I model it, light it, rig it and make it move —
-           then cut it down until it fits the budget.</p>
-      </div>
-
-      <figure class="sfig">
-        <span class="sh a"><img src="assets/daria-art.webp"
-              alt="Daria Shchipanova, painted" width="760" height="1026" loading="lazy"></span>
-        <span class="sh b"><img src="assets/daria-code.webp"
-              alt="Daria Shchipanova, rendered in ASCII characters"
-              width="760" height="1026" loading="lazy"></span>
-      </figure>
-
-      <div class="sl right">
-        <h3>&lt;engineer&gt;</h3>
-        <p>Tooling, shaders and pipeline. JavaScript, Electron and Blender scripting,
-           because the repetitive half shouldn't be done by hand.</p>
-      </div>
-    </div>
-
     <div class="ab fx">
       <div class="abtxt">
         <p class="lead">I sit between the artists and the developers — preparing assets for
@@ -602,6 +595,19 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
           Creatives are testable hypotheses, not deliverables.</p>
         <p class="aside">My degree is in <b>optics engineering</b>, which turns out to be a
           reasonable way into rendering.</p>
+
+        <div class="duo">
+          <div>
+            <h4>artist</h4>
+            <p>3D, VFX, UI and animation. I model it, light it, rig it and make it move —
+               then cut it down until it fits the budget.</p>
+          </div>
+          <div>
+            <h4>&lt;engineer&gt;</h4>
+            <p>Tooling, shaders and pipeline. JavaScript, Electron and Blender scripting,
+               because the repetitive half shouldn't be done by hand.</p>
+          </div>
+        </div>
       </div>
 
       <aside class="gm">
@@ -619,19 +625,26 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
 </section>
 
 <section class="ct" id="contact">
-  <div class="wrap">
-    <h2 class="fx">Let's make<br>something <em>playable</em>.</h2>
-    <p class="sub fx">Open to technical artist roles where the pipeline is part of the job,
-       not a favour I do on the side.</p>
-    <div class="cta fx">
-      <a class="btn ye" href="mailto:dasha96schipanova@gmail.com">Email me</a>
-      <a class="btn sec" href="https://t.me/omnomnom08" target="_blank" rel="noopener">Message on Telegram</a>
+  <div class="wrap ctgrid">
+    <div class="ctcopy">
+      <h2 class="fx">Let's make<br>something <em>playable</em>.</h2>
+      <p class="sub fx">Open to technical artist roles where the pipeline is part of the job,
+         not a favour I do on the side.</p>
+      <div class="cta fx">
+        <a class="btn ye" href="mailto:dasha96schipanova@gmail.com">Email me</a>
+        <a class="btn sec" href="https://t.me/omnomnom08" target="_blank" rel="noopener">Message on Telegram</a>
+      </div>
+      <div class="ls fx">
+        <a href="mailto:dasha96schipanova@gmail.com">dasha96schipanova@gmail.com</a>
+        <a href="https://www.linkedin.com/in/omnomnom08" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.artstation.com/omnomnom08" target="_blank" rel="noopener">ArtStation</a>
+        <a href="https://github.com/omnomnom08" target="_blank" rel="noopener">GitHub</a>
+      </div>
     </div>
-    <div class="ls fx">
-      <a href="mailto:dasha96schipanova@gmail.com">dasha96schipanova@gmail.com</a>
-      <a href="https://www.linkedin.com/in/omnomnom08" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://www.artstation.com/omnomnom08" target="_blank" rel="noopener">ArtStation</a>
-      <a href="https://github.com/omnomnom08" target="_blank" rel="noopener">GitHub</a>
+    <div class="ctpic fx">
+      <span class="blob"></span>
+      <img src="assets/daria-cutout.webp" alt="Daria Shchipanova"
+           width="820" height="1045" loading="lazy">
     </div>
   </div>
 </section>
