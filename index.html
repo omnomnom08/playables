@@ -313,12 +313,9 @@ section[id],header[id]{scroll-margin-top:84px}
   font-size:12.5px;color:var(--mid);line-height:1.55}
 .pinfo .did b{color:var(--ink);font-weight:600;display:block;font-size:10.5px;
   letter-spacing:1.3px;text-transform:uppercase;margin-bottom:7px}
-.pinfo .did ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.pinfo .did li{position:relative;padding-left:13px;font-size:12.3px;line-height:1.45}
-.pinfo .did li::before{content:"";position:absolute;left:1px;top:.5em;width:5px;height:5px;
-  border-radius:50%;background:var(--ac);opacity:.45}
-.pinfo .did li i{font-style:normal;color:var(--ink);font-weight:600;
-  display:block;margin-bottom:1px}
+.pinfo .did ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:5px}
+.pinfo .did li{font-size:11.5px;line-height:1.35;color:var(--ink);background:var(--pa2);
+  border:1px solid var(--rule);padding:4px 9px;border-radius:6px;white-space:nowrap}
 .pinfo .acts{display:flex;gap:14px;margin-top:11px;flex-wrap:wrap}
 .lnk{font-size:12.5px;font-weight:600;color:var(--ac);
   border-bottom:1px solid rgba(10,125,146,.3);padding-bottom:1px;transition:border-color .2s}
@@ -704,11 +701,8 @@ var PLAYABLES = [
 
   { slug:"world-war-heroes", title:"World War Heroes", size:"4.69 MB",
     tags:"FPS · shooter · 3D",
-    did:["Helicopters — modelled, retopologised from high-poly, animation-ready",
-         "Character — repainted by hand for a Japanese setting; new face and uniform",
-         "Scene — assembled and optimised",
-         "UI — designed and built",
-         "SFX — sourced, cut and compressed to fit the build"] },
+    did:["Helicopter models","High-poly retopo","Character reskin",
+         "Scene assembly","UI","SFX edit","Optimisation"] },
 
   { slug:"bowmasters", title:"Bowmasters", size:"3.89 MB",
     tags:"Physics · versus · 2D",
@@ -788,11 +782,8 @@ var PLAYABLES = [
         '<div class="sub"><span class="tg">' + esc(p.tags) + "</span>" +
           '<span class="sz">' + esc(p.size) + "</span></div>" +
         '<div class="did"><b>What I did</b><ul>' +
-          (Array.isArray(p.did) ? p.did : [p.did]).map(function (d) {
-            var i = d.indexOf("—");
-            return i > 0
-              ? "<li><i>" + esc(d.slice(0, i).trim()) + "</i>" + esc(d.slice(i + 1).trim()) + "</li>"
-              : "<li>" + esc(d) + "</li>";
+          (Array.isArray(p.did) ? p.did : String(p.did).split(/,s*/)).map(function (d) {
+            return "<li>" + esc(d) + "</li>";
           }).join("") + "</ul></div>" +
         (p.ph ? "" : '<div class="acts">' +
           '<a class="lnk" href="play/' + esc(p.slug) + '.html" target="_blank" rel="noopener">Full screen ↗</a>' +
