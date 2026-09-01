@@ -173,6 +173,11 @@ h1 em{font-style:normal;color:var(--ac);position:relative;white-space:nowrap}
 .facts .f:hover::after{transform:scale(1.35)}
 .facts .n{position:relative;font-size:clamp(28px,3.4vw,38px);font-weight:760;
   letter-spacing:-1.2px;line-height:1;font-variant-numeric:tabular-nums}
+/* each number takes the colour of its card's wash */
+.facts .f:nth-child(1) .n{color:var(--ac)}
+.facts .f:nth-child(2) .n{color:var(--yed)}
+.facts .f:nth-child(3) .n{color:#d1603d}
+.facts .f:nth-child(1) .l,.facts .f:nth-child(2) .l,.facts .f:nth-child(3) .l{color:var(--mid)}
 .odo{--cell:1.16em;display:inline-flex;align-items:flex-start;line-height:1}
 .odo .tx{display:block;height:var(--cell);line-height:var(--cell);white-space:pre}
 .odo .dg{display:block;height:var(--cell);overflow:hidden}
@@ -349,7 +354,7 @@ section[id],header[id]{scroll-margin-top:84px}
    otherwise a custom property inside mask-image snaps instead of animating. */
 @property --seam{syntax:"<percentage>";initial-value:50%;inherits:true}
 .sfig{position:relative;margin:0;width:100%;max-width:420px;aspect-ratio:760/1026;
-  --seam:50%;transition:--seam .6s var(--e);
+  --seam:50%;
   filter:drop-shadow(0 18px 26px rgba(20,21,26,.14))}
 .sfig::before{content:"";position:absolute;z-index:0;left:50%;bottom:1%;
   width:112%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;
@@ -362,12 +367,8 @@ section[id],header[id]{scroll-margin-top:84px}
 .sh.b{-webkit-mask-image:linear-gradient(to right,transparent calc(var(--seam) - 9%),#000 calc(var(--seam) + 9%));
               mask-image:linear-gradient(to right,transparent calc(var(--seam) - 9%),#000 calc(var(--seam) + 9%))}
 
-/* the whole half is the target, not just the label */
-.zone{position:absolute;z-index:3;top:-6%;bottom:-6%;width:60%}
-.zone.l{left:-14%}
-.zone.r{right:-14%}
-.sfig:has(.zone.l:hover){--seam:78%}
-.sfig:has(.zone.r:hover){--seam:22%}
+/* --seam is driven by cursor X across the whole page (see script).
+   Without JS it simply rests at 50% and both halves show. */
 
 .slab{position:absolute;z-index:4;bottom:3%;font-size:13px;font-weight:700;
   letter-spacing:.4px;padding:6px 13px;border-radius:99px;background:#fff;
@@ -375,11 +376,10 @@ section[id],header[id]{scroll-margin-top:84px}
   transition:transform .4s var(--e),color .4s,border-color .4s,box-shadow .4s}
 .slab.la{left:-4%;color:var(--yed)}
 .slab.lb{right:-4%;color:var(--ac);font-family:ui-monospace,Consolas,monospace;font-size:12px}
-.sfig:has(.zone.l:hover) .la{transform:translateY(-5px) scale(1.06);
+.slab.la.on{transform:translateY(-5px) scale(1.06);
   border-color:var(--ye);box-shadow:0 4px 0 var(--yed)}
-.sfig:has(.zone.r:hover) .lb{transform:translateY(-5px) scale(1.06);
+.slab.lb.on{transform:translateY(-5px) scale(1.06);
   border-color:var(--ac);box-shadow:0 4px 0 var(--ac)}
-@media(max-width:939px){.zone{width:52%}.zone.l{left:-4%}.zone.r{right:-4%}}
 
 /* artist / engineer pair inside About */
 .duo{display:grid;gap:24px;grid-template-columns:1fr;margin-top:30px;padding-top:26px;
@@ -503,8 +503,6 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
         <span class="sh b"><img src="assets/daria-code.webp"
               alt="Daria Shchipanova, rendered in ASCII characters"
               width="760" height="1026"></span>
-        <span class="zone l" aria-hidden="true"></span>
-        <span class="zone r" aria-hidden="true"></span>
         <figcaption class="slab la">artist</figcaption>
         <figcaption class="slab lb">&lt;engineer&gt;</figcaption>
       </figure>
@@ -823,33 +821,61 @@ var PLAYABLES = [
       return;
     }
 
+    var timers = new WeakMap();
+
+    function clear(o) {
+      (timers.get(o) || []).forEach(clearTimeout);
+      timers.set(o, []);
+    }
+    function later(o, fn, ms) {
+      timers.get(o).push(setTimeout(fn, ms));
+    }
+
     function roll(o, cardDelay) {
+      clear(o);
       [].forEach.call(o.querySelectorAll(".rl"), function (rl, i) {
         var d = cardDelay + i * 110;
         /* 1 — dip down, the wind-up */
-        setTimeout(function () {
+        later(o, function () {
           rl.style.transition = "transform .22s cubic-bezier(.4,0,.6,1)";
           rl.style.transform = "translateY(calc(var(--cell) * .34))";
         }, d);
         /* 2 — spin up, overshoot slightly, settle */
-        setTimeout(function () {
+        later(o, function () {
           rl.classList.add("blur");
           rl.style.transition = "transform 1.35s cubic-bezier(.13,.85,.2,1.035)," +
                                 "filter .5s ease .55s";
           rl.style.transform = land(rl);
         }, d + 230);
-        setTimeout(function () { rl.classList.remove("blur"); }, d + 230 + 1100);
+        later(o, function () { rl.classList.remove("blur"); }, d + 230 + 1100);
       });
+    }
+
+    /* wind back to zero once it leaves, so it replays on the way back */
+    function rewind(o) {
+      clear(o);
+      [].forEach.call(o.querySelectorAll(".rl"), function (rl) {
+        rl.classList.remove("blur");
+        rl.style.transition = "none";
+        rl.style.transform = "translateY(0)";
+      });
+      void o.offsetHeight;               /* flush, so the next roll animates */
     }
 
     var oo = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        oo.unobserve(e.target);
-        roll(e.target, odos.indexOf(e.target) * 170);
+        var o = e.target;
+        if (e.isIntersecting) {
+          if (o.dataset.rolled) return;
+          o.dataset.rolled = "1";
+          roll(o, odos.indexOf(o) * 170);
+        } else if (o.dataset.rolled) {
+          delete o.dataset.rolled;
+          rewind(o);
+        }
       });
     }, { threshold: .55 });
-    odos.forEach(function (o) { oo.observe(o); });
+    odos.forEach(function (o) { timers.set(o, []); oo.observe(o); });
   })();
 
   /* ---------- discipline rotator ---------- */
@@ -904,6 +930,28 @@ var PLAYABLES = [
     });
     rota.addEventListener("mouseenter", stop);
     rota.addEventListener("mouseleave", function () { if (!reduce) play(); });
+  })();
+
+  /* ---------- split portrait follows the cursor, page-wide ---------- */
+  (function () {
+    var fig = document.querySelector(".sfig");
+    if (!fig || reduce) return;
+    if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    var la = fig.querySelector(".la"), lb = fig.querySelector(".lb"),
+        target = 50, cur = 50, raf = 0;
+
+    function tick() {
+      cur += (target - cur) * .075;
+      fig.style.setProperty("--seam", cur.toFixed(2) + "%");
+      if (la) la.classList.toggle("on", cur > 56);
+      if (lb) lb.classList.toggle("on", cur < 44);
+      raf = Math.abs(target - cur) > .05 ? requestAnimationFrame(tick) : 0;
+    }
+    addEventListener("mousemove", function (e) {
+      /* cursor left of the page -> the painting wins; right -> the ASCII wins */
+      target = 80 - (e.clientX / innerWidth) * 60;
+      if (!raf) raf = requestAnimationFrame(tick);
+    }, { passive: true });
   })();
 
   /* ---------- cursor ---------- */
