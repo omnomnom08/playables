@@ -303,6 +303,27 @@ section[id],header[id]{scroll-margin-top:84px}
   color:var(--ink);opacity:.72;line-height:1.15;padding-bottom:6px}
 @media(max-width:680px){.tip{display:none}}
 
+/* closing tile — paper, not a screen */
+.frame.more{display:flex;flex-direction:column;justify-content:flex-end;gap:10px;
+  padding:26px 24px 24px;text-align:left;background:var(--pa2);
+  border:2px dashed var(--rule2);color:inherit;box-shadow:none;
+  transition:transform .5s var(--e),border-color .35s,background .35s,box-shadow .5s var(--e)}
+.pcard:hover .frame.more{transform:translateY(-6px);border-color:var(--ye);
+  background:#fffdf4;box-shadow:0 18px 40px rgba(20,21,26,.10)}
+.frame.more .mblob{position:absolute;z-index:0;right:-56px;top:-56px;width:190px;height:190px;
+  border-radius:50%;background:var(--ye);opacity:.34;transition:transform .7s var(--e)}
+.pcard:hover .frame.more .mblob{transform:scale(1.28)}
+.frame.more>*{position:relative;z-index:1}
+.frame.more .mplus{font-size:74px;line-height:.7;font-weight:300;color:var(--yed);
+  margin-bottom:auto;transition:transform .55s var(--e)}
+.pcard:hover .frame.more .mplus{transform:rotate(90deg)}
+.frame.more b{font-size:22px;font-weight:720;letter-spacing:-.03em;line-height:1.2}
+.frame.more p{margin:0;font-size:13.5px;color:var(--mid);line-height:1.6}
+.frame.more .mscrawl{font-family:"Caveat","Segoe Script",cursive;font-size:19px;
+  color:var(--ink);opacity:.75;line-height:1.2;transform:rotate(-1.6deg);
+  transform-origin:left center;transition:transform .35s var(--e),opacity .35s}
+.pcard:hover .frame.more .mscrawl{opacity:1;transform:rotate(-1.6deg) translateX(5px)}
+
 /* ── process ─────────────────────────────────────────── */
 .flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:16px}
 .st{position:relative;padding:26px 24px;border:1px solid var(--rule);border-radius:18px;
@@ -588,7 +609,16 @@ var PLAYABLES = [
 
   { slug:"tap-gallery", title:"Tap Gallery", size:"4.10 MB",
     tags:"Puzzle · block tap-away · 2D",
-    did:"Scene assembly, animation, VFX, UI, size optimisation" }
+    did:"Scene assembly, animation, VFX, UI, size optimisation" },
+
+  { slug:"railroad-empire", title:"Railroad Empire: Train Game", size:"4.74 MB",
+    tags:"Tycoon · idle · 3D",
+    did:"Scene assembly, 3D animation, VFX, UI, size optimisation" },
+
+  /* closing tile — not a playable */
+  { more:1, title:"…and a lot more",
+    note:"These twelve just fit on the page. I ship 12–13 new creatives every month, across just about every genre there is.",
+    scrawl:"want to see a specific genre? just ask →" }
 ];
 
 (function () {
@@ -601,6 +631,16 @@ var PLAYABLES = [
   document.getElementById("pg").innerHTML = PLAYABLES.map(function (p, i) {
     var n = String(i + 1);
     if (n.length < 2) n = "0" + n;
+    if (p.more) {
+      return '<article class="pcard fx">' +
+        '<a class="frame more" href="mailto:dasha96schipanova@gmail.com">' +
+          '<span class="mblob"></span>' +
+          '<span class="mplus">+</span>' +
+          "<b>" + esc(p.title) + "</b>" +
+          "<p>" + esc(p.note) + "</p>" +
+          '<span class="mscrawl">' + esc(p.scrawl) + "</span>" +
+        "</a></article>";
+    }
     var screen = p.ph
       ? '<div class="idle"><b>' + esc(p.title) + "</b><i>Placeholder slot</i></div>"
       : '<div class="start"><span class="ring">' + PLAY + "</span>" +
