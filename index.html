@@ -400,24 +400,50 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
    Fill one: run scripts/debrand.mjs, then set slug + drop ph:1.
    `hl:1` gives the yellow highlight (currently Temple Escape).
    ══════════════════════════════════════════════════════════════ */
+/* ⚠ `did` is the one field I cannot write for you — it is currently a
+   generic placeholder on every client build. Replace each with what you
+   actually did on that creative. */
 var PLAYABLES = [
   { slug:"temple-escape", title:"Temple Escape", size:"2.93 MB", hl:1, mark:"Built solo",
-    tags:"Match-3 · 2D + 3D",
+    tags:"Match-3 · 2D + 3D · personal project",
     did:"Concept, all art, all code, custom debris physics, hand-written VFX, Three.js character rig, art pipeline tool",
     source:"https://github.com/omnomnom08/temple-escape" },
 
-  { slug:"train-tycoon-3d", title:"3D Tycoon Builder", size:"4.74 MB",
-    tags:"Tycoon · 3D · idle",
+  { slug:"world-war-heroes", title:"World War Heroes", size:"4.69 MB",
+    tags:"FPS · shooter · 3D",
     did:"Scene assembly, 3D animation, VFX, UI, size optimisation" },
 
-  { ph:1, title:"Slot 03", size:"— MB", tags:"Merge · 2D",     did:"Scene assembly, VFX, UI" },
-  { ph:1, title:"Slot 04", size:"— MB", tags:"Match-3 · 2D",   did:"Scene assembly, animation" },
-  { ph:1, title:"Slot 05", size:"— MB", tags:"Shooter · 3D",   did:"3D animation, VFX, optimisation" },
-  { ph:1, title:"Slot 06", size:"— MB", tags:"Puzzle · 2D",    did:"UI, animation" },
-  { ph:1, title:"Slot 07", size:"— MB", tags:"Idle · 3D",      did:"Scene assembly, VFX" },
-  { ph:1, title:"Slot 08", size:"— MB", tags:"Runner · 3D",    did:"3D animation, optimisation" },
-  { ph:1, title:"Slot 09", size:"— MB", tags:"Solitaire · 2D", did:"UI, animation" },
-  { ph:1, title:"Slot 10", size:"— MB", tags:"Physics · 3D",   did:"VFX, shaders" }
+  { slug:"bowmasters", title:"Bowmasters", size:"3.89 MB",
+    tags:"Physics · versus · 2D",
+    did:"Scene assembly, animation, VFX, UI, size optimisation" },
+
+  { slug:"kingdom-clash", title:"Kingdom Clash", size:"4.04 MB",
+    tags:"Strategy · army battler · 3D",
+    did:"Scene assembly, 3D animation, VFX, UI, size optimisation" },
+
+  { slug:"pick-me-up-3d", title:"Pick Me Up 3D", size:"4.72 MB",
+    tags:"Driving · simulation · 3D",
+    did:"Scene assembly, 3D animation, VFX, UI, size optimisation" },
+
+  { slug:"who-dies-first", title:"Who Dies First", size:"4.20 MB",
+    tags:"Puzzle · save-the-character · 3D",
+    did:"Scene assembly, 3D animation, VFX, UI, size optimisation" },
+
+  { slug:"hide-in-the-bush", title:"Hide in the Backrooms", size:"4.49 MB",
+    tags:"Horror · hide &amp; seek · 3D",
+    did:"Scene assembly, 3D animation, VFX, UI, size optimisation" },
+
+  { slug:"dye-hard", title:"Dye Hard: Color War", size:"3.63 MB",
+    tags:"Runner · colour · 3D",
+    did:"Scene assembly, 3D animation, VFX, UI, size optimisation" },
+
+  { slug:"motorpolia", title:"Motorpolia", size:"3.64 MB",
+    tags:"Idle · tycoon · 3D",
+    did:"Scene assembly, 3D animation, VFX, UI, size optimisation" },
+
+  { slug:"tap-gallery", title:"Tap Gallery", size:"4.10 MB",
+    tags:"Puzzle · block tap-away · 2D",
+    did:"Scene assembly, animation, VFX, UI, size optimisation" }
 ];
 
 (function () {

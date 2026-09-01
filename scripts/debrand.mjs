@@ -40,16 +40,19 @@ if (extname(input).toLowerCase() === '.zip') {
     return statSync(p).isDirectory() ? walk(p) : [p];
   });
   const files = walk(tmp);
-  const htmlFiles = files.filter((f) => extname(f).toLowerCase() === '.html');
-  if (htmlFiles.length !== 1) {
-    console.error(`expected exactly one .html in the zip, found ${htmlFiles.length}`);
-    console.error(htmlFiles.map((f) => '  ' + f).join('\n'));
-    process.exit(1);
-  }
-  if (files.length !== htmlFiles.length) {
-    console.error('WARNING: zip contains non-html files; this script only handles single-file builds.');
-    console.error(files.filter((f) => !htmlFiles.includes(f)).map((f) => '  ' + f).join('\n'));
-    process.exit(1);
+  let htmlFiles = files.filter((f) => extname(f).toLowerCase() === '.html');
+  if (!htmlFiles.length) { console.error('no .html in the zip'); process.exit(1); }
+  if (htmlFiles.length > 1) {
+    // A delivery bundle: every ad-network variant in one zip. The standalone
+    // "xcl_en - preview" build is the self-contained one to publish.
+    const pref = htmlFiles.filter((f) => /xcl.*preview\.html$/i.test(f));
+    if (pref.length === 1) htmlFiles = pref;
+    else {
+      console.error(htmlFiles.length + ' html files; cannot pick one:');
+      console.error(htmlFiles.map((f) => '  ' + f).join('\n'));
+      process.exit(1);
+    }
+    console.log('bundle -> ' + htmlFiles[0].split(/[\\/]/).pop());
   }
   html = readFileSync(htmlFiles[0], 'utf8');
 } else {
