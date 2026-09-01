@@ -4,189 +4,446 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Daria Shchipanova — Technical Artist, Playable Ads</title>
-<meta name="description" content="Playable ad creatives, pipeline tooling and technical art by Daria Shchipanova.">
+<meta name="description" content="Playable ad creatives, VFX, pipeline tooling and technical art by Daria Shchipanova.">
+<meta property="og:title" content="Daria Shchipanova — Technical Artist, Playable Ads">
+<meta property="og:description" content="Playable ads you can play in the browser. VFX, 3D, shaders and the tooling that ships them.">
+<meta property="og:type" content="website">
 <style>
-/* ---- CV palette. Swap these values to match your CV exactly. ---- */
+/* ============================================================
+   Palette — cyan + yellow lifted from the CV, on a dark ground.
+   #00a3c3 header band · #008b9c accent · #f5d742 chips · #ffde33 bullets
+   ============================================================ */
 :root{
-  --teal:#00a3c4;          /* CV header band */
-  --teal-dark:#00819c;     /* hover / links */
-  --gold:#ffd24d;          /* CV date chips -> build-size tags */
-  --ink:#1c1c1c;
-  --muted:#6b6b6b;
-  --line:#e3e3e3;
-  --bg:#fff;
-  --card:#fafafa;
-  --max:1040px;
+  --bg:#0b0d0f;
+  --bg-2:#111417;
+  --card:#15191d;
+  --card-2:#1b2025;
+  --line:#242a30;
+  --line-2:#2f373f;
+
+  --cyan:#00a3c3;
+  --cyan-hi:#2fd4f2;
+  --cyan-dim:#008b9c;
+  --yellow:#f5d742;
+  --yellow-hi:#ffde33;
+  --ink-on-yellow:#2d1b1b;
+
+  --tx:#e7ebee;
+  --tx-mid:#a7b0b8;
+  --tx-dim:#727d86;
+
+  --max:1160px;
+  --r:10px;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);
-  font:16px/1.55 "Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:var(--teal-dark)}
-.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--tx);
+  font:16px/1.6 "Segoe UI",Roboto,-apple-system,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(900px 500px at 78% -8%, rgba(0,163,195,.16), transparent 62%),
+    radial-gradient(700px 420px at 8% 4%, rgba(245,215,66,.07), transparent 60%);
+  background-repeat:no-repeat;
+}
+a{color:var(--cyan-hi);text-decoration:none}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 26px}
+.mono{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace}
 
-/* ---- header band (mirrors the CV) ---- */
-header{background:var(--teal);color:#fff;padding:38px 0 30px;text-align:center}
-header h1{margin:0;font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:.5px}
-header .role{margin:6px 0 0;font-size:clamp(15px,2.6vw,20px);font-weight:400;opacity:.95}
-.links{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-.links a{display:inline-block;padding:7px 15px;border:1.5px solid rgba(255,255,255,.65);
-  border-radius:3px;color:#fff;text-decoration:none;font-size:14px;transition:.15s}
-.links a:hover{background:#fff;color:var(--teal-dark);border-color:#fff}
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:60;background:rgba(11,13,15,.82);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:26px;height:62px}
+.brand{font-weight:700;letter-spacing:.3px;color:var(--tx);white-space:nowrap}
+.brand b{color:var(--cyan-hi)}
+nav ul{list-style:none;display:flex;gap:24px;margin:0 0 0 auto;padding:0}
+nav ul a{color:var(--tx-mid);font-size:14.5px;font-weight:500;transition:color .15s}
+nav ul a:hover{color:var(--cyan-hi)}
+.nav-cta{border:1.5px solid var(--cyan);color:var(--cyan-hi);padding:7px 15px;
+  border-radius:6px;font-size:14px;font-weight:600;transition:.15s;white-space:nowrap}
+.nav-cta:hover{background:var(--cyan);color:#04191d}
+@media(max-width:860px){nav ul{display:none}}
 
-/* ---- intro ---- */
-.intro{padding:26px 0 6px;font-size:17px;max-width:78ch}
-.intro strong{color:var(--teal-dark)}
+/* ---------- hero ---------- */
+.hero{padding:78px 0 56px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;
+  letter-spacing:1.6px;text-transform:uppercase;color:var(--yellow);
+  border:1px solid rgba(245,215,66,.3);background:rgba(245,215,66,.07);
+  padding:6px 13px;border-radius:99px}
+.hero h1{margin:20px 0 0;font-size:clamp(36px,6.4vw,64px);line-height:1.05;
+  font-weight:800;letter-spacing:-1.2px}
+.hero h1 em{font-style:normal;color:var(--cyan-hi)}
+.hero .lede{margin:20px 0 0;max-width:62ch;font-size:clamp(16px,2vw,18.5px);color:var(--tx-mid)}
+.hero .lede b{color:var(--tx);font-weight:600}
+.hero-btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{display:inline-block;padding:12px 24px;border-radius:8px;font-size:15px;
+  font-weight:650;transition:.16s;border:1.5px solid transparent}
+.btn.solid{background:var(--cyan);color:#04191d}
+.btn.solid:hover{background:var(--cyan-hi);transform:translateY(-1px)}
+.btn.out{border-color:var(--line-2);color:var(--tx)}
+.btn.out:hover{border-color:var(--cyan);color:var(--cyan-hi)}
+.btn.yellow{background:var(--yellow);color:var(--ink-on-yellow)}
+.btn.yellow:hover{background:var(--yellow-hi);transform:translateY(-1px)}
 
-/* ---- ruled section heading (mirrors the CV) ---- */
-h2{font-size:21px;margin:38px 0 4px;padding-bottom:5px;border-bottom:2px solid var(--ink);
-  display:flex;align-items:baseline;gap:10px}
-h2 small{font-weight:400;font-size:13px;color:var(--muted);margin-left:auto}
+/* ---------- stats ---------- */
+.stats{display:grid;gap:14px;margin-top:52px;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;
+  position:relative;overflow:hidden}
+.stat::after{content:"";position:absolute;left:0;top:0;width:3px;height:100%;background:var(--cyan)}
+.stat:nth-child(2)::after{background:var(--yellow)}
+.stat .n{font-size:clamp(26px,3.6vw,34px);font-weight:800;letter-spacing:-.6px;line-height:1.1}
+.stat .l{margin-top:5px;font-size:13.5px;color:var(--tx-dim);line-height:1.45}
 
-/* ---- playable grid ---- */
-.grid{display:grid;gap:18px;margin-top:20px;
-  grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
-.card{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--card);
-  display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:.15s}
-.card:hover{border-color:var(--teal);box-shadow:0 4px 14px rgba(0,0,0,.09);transform:translateY(-2px)}
-.thumb{aspect-ratio:4/5;background:var(--teal);display:flex;align-items:center;justify-content:center;
-  padding:16px;text-align:center;position:relative;overflow:hidden}
-.thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-.thumb span{color:#fff;font-weight:600;font-size:17px;line-height:1.3;z-index:1}
-.meta{padding:12px 14px 14px}
-.meta h3{margin:0;font-size:15px;font-weight:700}
-.meta p{margin:5px 0 0;font-size:13.5px;color:var(--muted);line-height:1.45}
-.tags{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
-.chip{background:var(--gold);color:#4a3800;font-size:11.5px;font-weight:700;
-  padding:3px 9px;border-radius:3px;white-space:nowrap}
-.chip.ghost{background:transparent;color:var(--muted);border:1px solid var(--line);font-weight:600}
+/* ---------- section furniture ---------- */
+section{padding:64px 0 8px}
+.shead{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;
+  border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:30px}
+.shead .idx{font-size:13px;font-weight:700;color:var(--yellow);letter-spacing:2px}
+.shead h2{margin:0;font-size:clamp(23px,3.4vw,30px);font-weight:750;letter-spacing:-.5px}
+.shead p{margin:0 0 0 auto;color:var(--tx-dim);font-size:14px;max-width:44ch}
 
-/* ---- featured ---- */
-.feature{margin-top:20px;border:1px solid var(--line);border-left:4px solid var(--gold);
-  border-radius:6px;padding:20px 22px;background:var(--card)}
-.feature h3{margin:0 0 6px;font-size:18px}
-.feature p{margin:0 0 14px;color:var(--muted);font-size:14.5px;max-width:70ch}
-.btnrow{display:flex;flex-wrap:wrap;gap:10px}
-.btn{display:inline-block;padding:9px 18px;border-radius:4px;text-decoration:none;
-  font-size:14px;font-weight:600}
-.btn.solid{background:var(--teal);color:#fff}
-.btn.solid:hover{background:var(--teal-dark)}
-.btn.out{border:1.5px solid var(--teal);color:var(--teal-dark)}
-.btn.out:hover{background:var(--teal);color:#fff}
-.btn.dis{border:1.5px solid var(--line);color:var(--muted);cursor:not-allowed}
+/* ---------- playable grid ---------- */
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(288px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  overflow:hidden;display:flex;flex-direction:column;transition:.18s;position:relative}
+.card:hover{border-color:var(--cyan);transform:translateY(-3px);
+  box-shadow:0 14px 34px rgba(0,0,0,.5),0 0 0 1px rgba(0,163,195,.28)}
+.card.feat{grid-column:1/-1}
+@media(min-width:900px){
+  .card.feat{display:grid;grid-template-columns:minmax(280px,38%) 1fr;align-items:stretch}
+}
+.shot{position:relative;aspect-ratio:4/5;background:
+  linear-gradient(150deg,#123840 0%,#0d1a1f 55%,#141013 100%);
+  display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden}
+.card.feat .shot{aspect-ratio:auto;min-height:250px}
+.shot img,.shot video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.shot .ph{text-align:center;z-index:1}
+.shot .ph b{display:block;font-size:19px;font-weight:750;color:var(--tx);letter-spacing:-.3px}
+.shot .ph span{display:block;margin-top:7px;font-size:12px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--cyan-hi);font-weight:700}
+.size{position:absolute;left:12px;bottom:12px;z-index:2;background:var(--yellow);
+  color:var(--ink-on-yellow);font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:5px;
+  font-family:ui-monospace,Consolas,monospace;letter-spacing:.2px}
+.body{padding:18px 20px 20px;display:flex;flex-direction:column;flex:1}
+.body h3{margin:0;font-size:17.5px;font-weight:750;letter-spacing:-.3px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  padding:3.5px 9px;border-radius:5px;background:rgba(0,163,195,.13);
+  color:var(--cyan-hi);border:1px solid rgba(0,163,195,.28)}
+.desc{margin:13px 0 0;font-size:14.5px;color:var(--tx-mid);line-height:1.6}
+.did{margin:15px 0 0;padding-top:14px;border-top:1px solid var(--line)}
+.did .lab{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--yellow);font-weight:750}
+.did ul{list-style:none;margin:9px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:7px}
+.did li{font-size:12.5px;color:var(--tx-mid);background:var(--card-2);
+  border:1px solid var(--line);padding:4px 10px;border-radius:5px}
+.acts{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.acts .btn{padding:9px 17px;font-size:14px;border-radius:7px}
 
-/* ---- tooling list ---- */
-ul.tool{list-style:none;padding:0;margin:16px 0 0}
-ul.tool li{position:relative;padding:0 0 0 20px;margin-bottom:10px;font-size:15px;max-width:80ch}
-ul.tool li::before{content:"";position:absolute;left:0;top:.55em;width:8px;height:8px;
-  border-radius:50%;background:var(--gold)}
-ul.tool strong{color:var(--teal-dark)}
+/* ---------- workflow ---------- */
+.flow{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.step .k{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;font-weight:700;
+  color:var(--yellow);letter-spacing:1px}
+.step h4{margin:11px 0 8px;font-size:16.5px;font-weight:700}
+.step p{margin:0;font-size:14.5px;color:var(--tx-mid);line-height:1.6}
+.step p b{color:var(--cyan-hi);font-weight:650}
 
-footer{margin-top:52px;border-top:1px solid var(--line);padding:22px 0 44px;
-  color:var(--muted);font-size:14px;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between}
-footer a{color:var(--teal-dark)}
-@media(max-width:520px){.thumb{aspect-ratio:1/1}}
+/* ---------- about ---------- */
+.about{display:grid;gap:34px;grid-template-columns:1fr}
+@media(min-width:880px){.about{grid-template-columns:1.35fr .85fr}}
+.about p{font-size:16px;color:var(--tx-mid);margin:0 0 16px;max-width:66ch;line-height:1.72}
+.about p b{color:var(--tx);font-weight:650}
+.about .hi{color:var(--cyan-hi);font-weight:650}
+.side{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;height:fit-content}
+.side h4{margin:0 0 14px;font-size:12px;letter-spacing:1.8px;text-transform:uppercase;color:var(--yellow)}
+.side dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 14px;font-size:14px}
+.side dt{color:var(--tx-dim)}
+.side dd{margin:0;color:var(--tx)}
+.prev{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:14px;color:var(--tx-mid);line-height:1.6}
+.prev b{color:var(--tx)}
+.games{list-style:none;margin:12px 0 0;padding:0}
+.games li{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  padding:7px 0;border-bottom:1px dashed var(--line);font-size:13.5px;color:var(--tx)}
+.games li:last-child{border-bottom:0}
+.games span{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;
+  color:var(--yellow);white-space:nowrap;font-weight:650}
+
+/* ---------- contact ---------- */
+.contact{background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:42px 34px;text-align:center;position:relative;overflow:hidden}
+.contact::before{content:"";position:absolute;inset:0;
+  background:radial-gradient(600px 220px at 50% 0%,rgba(0,163,195,.16),transparent 70%)}
+.contact>*{position:relative}
+.contact h2{margin:0;font-size:clamp(24px,4vw,34px);font-weight:800;letter-spacing:-.6px}
+.contact p{margin:12px auto 0;max-width:52ch;color:var(--tx-mid)}
+.clinks{display:flex;flex-wrap:wrap;gap:11px;justify-content:center;margin-top:26px}
+
+footer{border-top:1px solid var(--line);margin-top:64px;padding:26px 0 46px;
+  color:var(--tx-dim);font-size:13.5px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .card:hover{transform:none}
+}
 </style>
 </head>
 <body>
 
-<header>
+<nav>
   <div class="wrap">
-    <h1>Daria Shchipanova</h1>
-    <p class="role">Technical Artist — Playable Ads</p>
-    <nav class="links">
-      <a href="mailto:dasha96schipanova@gmail.com">Email</a>
-      <a href="https://www.linkedin.com/in/omnomnom08" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://www.artstation.com/omnomnom08" target="_blank" rel="noopener">ArtStation</a>
-      <a href="https://github.com/omnomnom08" target="_blank" rel="noopener">GitHub</a>
-    </nav>
+    <span class="brand">Daria <b>Shchipanova</b></span>
+    <ul>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a class="nav-cta" href="#work">Play the ads</a>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <span class="eyebrow">Technical Artist — Playable Ads</span>
+  <h1>Playable ads that ship<br>under <em>5&nbsp;MB</em>.</h1>
+  <p class="lede">
+    I produce and implement the visual side of playable creatives — <b>scene assembly,
+    animation, VFX, UI</b> — and I build the tooling that makes them at volume.
+    Everything below runs in your browser. No video, no mockups.
+  </p>
+  <div class="hero-btns">
+    <a class="btn solid" href="#work">Play the ads</a>
+    <a class="btn out" href="#process">How I work</a>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="n" data-to="13" data-pre="12–">12–13</div>
+      <div class="l">playable creatives a month</div></div>
+    <div class="stat"><div class="n" data-to="5" data-suf=" MB">5 MB</div>
+      <div class="l">hard build ceiling, every time</div></div>
+    <div class="stat"><div class="n" data-to="20" data-suf="+">20+</div>
+      <div class="l">client titles, 2D puzzle to 3D shooter</div></div>
+    <div class="stat"><div class="n">Full<span style="color:var(--cyan-hi)">-cycle</span></div>
+      <div class="l">3D, VFX, shaders, UI and the pipeline</div></div>
   </div>
 </header>
 
-<main class="wrap">
+<main>
 
-  <p class="intro">
-    Technical artist with 5+ years in mobile games. I produce and implement the visual side of
-    <strong>playable ads</strong> — scene assembly, animation, VFX and optimisation
-    <strong>under the 5&nbsp;MB build limit</strong> — and I build the tooling that makes them at volume.
-    Everything below runs in the browser. Tap a card to play it.
-  </p>
-
-  <h2>Playables <small id="count"></small></h2>
+<section id="work" class="wrap">
+  <div class="shead">
+    <span class="idx">01</span>
+    <h2>Playables</h2>
+    <p>Live builds. Tap Play — they open exactly as they ran in the ad slot.</p>
+  </div>
   <div class="grid" id="grid"></div>
+</section>
 
-  <h2>Built from scratch <small>art, code and build pipeline — solo</small></h2>
-  <div class="feature">
-    <h3>Temple Escape — a fully custom playable</h3>
-    <p>
-      No game engine. A match-3 rescue playable written from an empty folder on
-      <strong>Pixi.js 8, Three.js and GSAP</strong> over a Vite/Node toolchain —
-      <strong>20 modules, ~8,300 lines</strong>, mobile-first and responsive, shipping as a
-      single self-contained <strong>2.93&nbsp;MB</strong> file.
-    </p>
-    <ul class="tool">
-      <li><strong>Custom debris physics</strong> — a headless simulation with its own unit tests,
-          separated from the Pixi renderer that draws it.</li>
-      <li><strong>Hand-written VFX</strong> — rope, confetti, dust, sparkle and shine, each its own module.</li>
-      <li><strong>Three.js character rig</strong> composited into the 2D Pixi scene.</li>
-      <li><strong>Own art pipeline tool</strong> — a sharp-based optimiser that gets the whole
-          creative under the size budget.</li>
-      <li>Traced and documented a silent failure in the playable SDK, where missing build-time
-          defines made every CTA fall through to <code>window.open("")</code>.</li>
-    </ul>
-    <div class="btnrow" style="margin-top:16px">
-      <a class="btn solid" href="play/temple-escape.html" target="_blank" rel="noopener">Play it</a>
-      <a class="btn out" href="https://github.com/omnomnom08/temple-escape" target="_blank" rel="noopener">Read the source</a>
+<section id="process" class="wrap">
+  <div class="shead">
+    <span class="idx">02</span>
+    <h2>Tools &amp; pipeline</h2>
+    <p>The half of the job that isn't visible in the creative.</p>
+  </div>
+  <div class="flow">
+    <div class="step reveal">
+      <div class="k">01 / TOOLING</div>
+      <h4>Electron production tool</h4>
+      <p>Built around the studio playable template. <b>Generates particle emitters</b> and
+         strips repetitive setup out of every build.</p>
+    </div>
+    <div class="step reveal">
+      <div class="k">02 / PROCEDURAL</div>
+      <h4>Blender systems</h4>
+      <p><b>Geometry Nodes</b> for scattering and instancing, plus AI-assisted scripts for
+         asset renaming and vertex-index restructuring.</p>
+    </div>
+    <div class="step reveal">
+      <div class="k">03 / VFX</div>
+      <h4>Shaders &amp; effects</h4>
+      <p>Custom shaders authored for <b>reusable VFX workflows</b> across creatives, rather
+         than one-off effects per ad.</p>
+    </div>
+    <div class="step reveal">
+      <div class="k">04 / BUDGET</div>
+      <h4>Optimisation</h4>
+      <p>Texture atlasing, mesh reduction, <b>particle and draw-call budgets</b> — holding
+         visual quality against a hard size ceiling.</p>
     </div>
   </div>
+</section>
 
-  <h2>Tools &amp; pipeline</h2>
-  <ul class="tool">
-    <li><strong>Electron production tool</strong> built around the studio playable template —
-        generates <strong>particle emitters</strong> and strips repetitive setup out of production.</li>
-    <li><strong>Blender Geometry Nodes</strong> systems for procedural scattering and instancing,
-        plus AI-assisted scripts for asset renaming and vertex-index restructuring.</li>
-    <li><strong>Custom shaders</strong> authored for reusable VFX workflows.</li>
-    <li>Asset optimisation to a hard size budget — texture atlasing, mesh reduction,
-        particle and draw-call budgets.</li>
-  </ul>
+<section id="about" class="wrap">
+  <div class="shead">
+    <span class="idx">03</span>
+    <h2>About</h2>
+  </div>
+  <div class="about">
+    <div>
+      <p>
+        I'm a technical artist with <b>5+ years in mobile games</b>, working where art meets
+        engineering. Day to day I sit between the artists and the developers: preparing assets
+        for <span class="hi">code-based implementation</span>, assembling and polishing scenes,
+        and making the result fit a build budget that does not move.
+      </p>
+      <p>
+        I don't hand off assets and walk away. I build the tooling that produces them —
+        an Electron tool around our playable template, procedural Blender systems, custom
+        shaders — because the repetitive half of creative production should not be done by hand.
+      </p>
+      <p>
+        I also read the numbers. At <b>Nexters Global</b> I worked with
+        <span class="hi">CPI, CTR and retention</span> and fed them back into art decisions.
+        Creatives are testable hypotheses, not deliverables.
+      </p>
+    </div>
+    <aside class="side">
+      <h4>At a glance</h4>
+      <dl>
+        <dt>Focus</dt><dd>Playable ads, VFX, pipeline</dd>
+        <dt>Engines</dt><dd>Custom JS (Pixi / Three), Unity, Cocos</dd>
+        <dt>Code</dt><dd>JavaScript, Electron, Node, Git</dd>
+        <dt>Art</dt><dd>Blender, Spine, Substance, Photoshop</dd>
+        <dt>Work</dt><dd>Remote</dd>
+      </dl>
+      <div class="prev">
+        <b>Before playables</b> — solo 3D artist on 30+ published mobile games,
+        three at 1M–5M+ downloads:
+        <ul class="games">
+          <li>Isle Builder: Click to Survive <span>5M+ · 4.2★</span></li>
+          <li>Survival City Builder <span>5M+ · 3.8★</span></li>
+          <li>Idle Pet Shop <span>1M+ · 4.5★</span></li>
+          <li>Fantasy Tavern <span>100K+ · Nexters</span></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="contact" id="contact">
+    <h2>Let's work together</h2>
+    <p>Looking for a technical artist who can build the creative and the pipeline that
+       produces it? I'm open to talk.</p>
+    <div class="clinks">
+      <a class="btn yellow" href="mailto:dasha96schipanova@gmail.com">Email me</a>
+      <a class="btn out" href="https://t.me/omnomnom08" target="_blank" rel="noopener">Telegram</a>
+      <a class="btn out" href="https://www.linkedin.com/in/omnomnom08" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn out" href="https://www.artstation.com/omnomnom08" target="_blank" rel="noopener">ArtStation</a>
+      <a class="btn out" href="https://github.com/omnomnom08" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</section>
 
 </main>
 
 <footer class="wrap">
-  <span>Daria Shchipanova — Technical Artist</span>
-  <span><a href="mailto:dasha96schipanova@gmail.com">dasha96schipanova@gmail.com</a></span>
+  <span>Daria Shchipanova — Technical Artist, Playable Ads</span>
+  <span class="mono">dasha96schipanova@gmail.com · @omnomnom08</span>
 </footer>
 
 <script>
-/* ---------------------------------------------------------------
-   Add a playable:
-     1. node scripts/debrand.mjs <build.zip> <slug>
-     2. paste the printed row below
-     3. optional: drop a screenshot in assets/ and set poster
-   --------------------------------------------------------------- */
-const PLAYABLES = [
-  { slug: "train-tycoon-3d", title: "3D Tycoon Builder", role: "Scene assembly, 3D animation, VFX, UI, size optimisation", size: "4.74 MB", poster: "" }
+/* =================================================================
+   PLAYABLES
+   Add an entry:
+     1. node scripts/debrand.mjs "<build.zip>" <slug>
+     2. paste the printed row here
+     3. optional poster:'assets/posters/<slug>.jpg' or loop:'...webm'
+   Fields:
+     slug   file in play/<slug>.html
+     title  card heading
+     tags   mechanic / style labels
+     desc   one or two lines about the creative
+     did    WHAT YOU DID - the important field
+     size   build size chip
+     feat   true = full-width featured card
+     source optional public repo link
+   ================================================================= */
+var PLAYABLES = [
+  {
+    slug: "temple-escape",
+    title: "Temple Escape",
+    tags: ["Match-3", "2D + 3D", "Built from scratch"],
+    desc: "A match-3 rescue playable written from an empty folder on Pixi.js 8, Three.js and GSAP — 20 modules, ~8,300 lines, shipping as one self-contained file. The only piece here where the source is public too.",
+    did: ["Concept", "All art", "All code", "Custom debris physics", "Hand-written VFX", "Three.js character rig", "Art pipeline tool", "Build setup"],
+    size: "2.93 MB",
+    feat: true,
+    source: "https://github.com/omnomnom08/temple-escape"
+  },
+  {
+    slug: "train-tycoon-3d",
+    title: "3D Tycoon Builder",
+    tags: ["Tycoon", "3D", "Idle"],
+    desc: "Full 3D build-and-upgrade creative with a physics layer, running inside the ad-network size budget.",
+    did: ["Scene assembly", "3D animation", "VFX", "UI", "Size optimisation"],
+    size: "4.74 MB"
+  }
 ];
 
-var grid = document.getElementById("grid");
-grid.innerHTML = PLAYABLES.map(function (p) {
-  var art = p.poster
-    ? '<img src="' + p.poster + '" alt="' + p.title + '" loading="lazy">'
-    : "<span>" + p.title + "</span>";
-  return '<a class="card" href="play/' + p.slug + '.html" target="_blank" rel="noopener">' +
-           '<div class="thumb">' + art + "</div>" +
-           '<div class="meta">' +
-             "<h3>" + p.title + "</h3>" +
-             "<p>" + p.role + "</p>" +
-             '<div class="tags">' +
-               '<span class="chip">' + p.size + "</span>" +
-               '<span class="chip ghost">Playable</span>' +
-             "</div>" +
-           "</div>" +
-         "</a>";
-}).join("");
-document.getElementById("count").textContent =
-  PLAYABLES.length + (PLAYABLES.length === 1 ? " creative" : " creatives");
+(function () {
+  var esc = function (s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  };
+
+  document.getElementById("grid").innerHTML = PLAYABLES.map(function (p) {
+    var art = p.loop
+      ? '<video src="' + esc(p.loop) + '" autoplay muted loop playsinline></video>'
+      : p.poster
+        ? '<img src="' + esc(p.poster) + '" alt="' + esc(p.title) + '" loading="lazy">'
+        : '<div class="ph"><b>' + esc(p.title) + "</b><span>Playable</span></div>";
+
+    var src = p.source
+      ? '<a class="btn out" href="' + esc(p.source) + '" target="_blank" rel="noopener">Source</a>'
+      : "";
+
+    return '<article class="card reveal' + (p.feat ? " feat" : "") + '">' +
+      '<div class="shot">' + art + '<span class="size">' + esc(p.size) + "</span></div>" +
+      '<div class="body">' +
+        "<h3>" + esc(p.title) + "</h3>" +
+        '<div class="tags">' + p.tags.map(function (t) {
+          return '<span class="tag">' + esc(t) + "</span>";
+        }).join("") + "</div>" +
+        '<p class="desc">' + esc(p.desc) + "</p>" +
+        '<div class="did"><span class="lab">What I did</span><ul>' +
+          p.did.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") +
+        "</ul></div>" +
+        '<div class="acts">' +
+          '<a class="btn solid" href="play/' + esc(p.slug) + '.html" target="_blank" rel="noopener">Play</a>' +
+          src +
+        "</div>" +
+      "</div></article>";
+  }).join("");
+
+  /* reveal on scroll */
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { threshold: .12 });
+  document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+
+  /* count up the numeric stats once */
+  var so = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      so.unobserve(e.target);
+      var el = e.target, to = +el.dataset.to;
+      if (!to) return;
+      var pre = el.dataset.pre || "", suf = el.dataset.suf || "", t0 = performance.now();
+      (function tick(now) {
+        var k = Math.min(1, (now - t0) / 900);
+        el.textContent = pre + Math.round(to * (1 - Math.pow(1 - k, 3))) + suf;
+        if (k < 1) requestAnimationFrame(tick);
+      })(t0);
+    });
+  }, { threshold: .5 });
+  document.querySelectorAll(".stat .n[data-to]").forEach(function (el) { so.observe(el); });
+})();
 </script>
 </body>
 </html>
