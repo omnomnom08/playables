@@ -206,11 +206,12 @@ h1 em{font-style:normal;color:var(--ac);position:relative;white-space:nowrap}
 .rword.code{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
   font-size:.82em;letter-spacing:-.02em}
 .rota .l{position:relative;z-index:1;transition:opacity .28s;min-height:2.8em}
-.rdots{position:relative;z-index:1;display:flex;gap:5px;margin-top:10px}
+.rdots{position:absolute;z-index:2;top:19px;left:0;right:0;margin:0 auto;
+  display:flex;gap:5px;justify-content:center;pointer-events:none}
 .rdots i{width:5px;height:5px;border-radius:50%;background:var(--rule2);
   transition:background .3s,width .3s var(--e)}
 .rdots i.on{background:var(--ac);width:15px;border-radius:99px}
-.rhint{position:absolute;z-index:1;right:14px;top:16px;
+.rhint{position:absolute;z-index:2;right:14px;bottom:13px;
   font-family:"Caveat","Segoe Script",cursive;font-size:16px;color:var(--dim);
   transform:rotate(-6deg);opacity:.8}
 
