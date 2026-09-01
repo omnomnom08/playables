@@ -140,7 +140,7 @@ h1 em{font-style:normal;color:var(--ac);position:relative;white-space:nowrap}
 
 /* cut-out portrait */
 .hpic{position:relative;display:flex;justify-content:center;align-items:flex-end;
-  min-height:360px}
+  min-height:380px;padding:0 4%}
 .hpic .ring{position:absolute;z-index:0;width:96%;max-width:460px;aspect-ratio:1;
   bottom:-6%;border:2px dashed var(--rule2);border-radius:50%;
   animation:spin 60s linear infinite}
@@ -210,18 +210,30 @@ h1 em{font-style:normal;color:var(--ac);position:relative;white-space:nowrap}
   font-family:"Caveat","Segoe Script",cursive;font-size:16px;color:var(--dim);
   transform:rotate(-6deg);opacity:.8}
 
-.hside{display:flex;flex-direction:column;gap:14px}
-.sdesc{position:relative;min-height:6.6em;text-align:center;padding:0 6px}
-.sdesc p{position:absolute;inset:0;margin:0;font-size:14.5px;line-height:1.62;
-  color:var(--mid);opacity:0;transform:translateY(8px);
+/* notes pinned beside the portrait, where the 5 MB sticker used to sit */
+.sdesc{position:absolute;inset:0;z-index:5;pointer-events:none}
+.sdesc p{position:absolute;margin:0;width:min(216px,60%);
+  font-size:12.8px;line-height:1.56;color:var(--ink);
+  background:rgba(255,255,255,.93);backdrop-filter:blur(7px);
+  border:1px solid var(--rule2);border-radius:13px;padding:13px 15px;
+  box-shadow:0 10px 26px rgba(20,21,26,.15);
+  opacity:0;transform:translateY(12px) scale(.95);
   transition:opacity .42s var(--e),transform .42s var(--e)}
-.sdesc .dh{color:var(--dim);font-family:"Caveat","Segoe Script",cursive;font-size:19px;
-  line-height:1.35;display:flex;align-items:center;justify-content:center}
+.sdesc .da{left:-13%;top:17%;rotate:-2.5deg;border-left:3px solid var(--ye)}
+.sdesc .db{right:-13%;top:17%;rotate:2.5deg;border-right:3px solid var(--ac)}
+.sdesc .dh{left:0;right:0;margin:0 auto;bottom:-4%;width:min(232px,78%);
+  text-align:center;color:var(--dim);background:none;border:0;box-shadow:none;
+  backdrop-filter:none;padding:0;rotate:-1.5deg;
+  font-family:"Caveat","Segoe Script",cursive;font-size:19px;line-height:1.3}
 .sdesc[data-state=""] .dh,
 .sdesc:not([data-state]) .dh{opacity:1;transform:none}
 .sdesc[data-state="a"] .da{opacity:1;transform:none}
 .sdesc[data-state="b"] .db{opacity:1;transform:none}
-@media(max-width:939px){.sdesc{min-height:7.8em}}
+@media(max-width:939px){
+  .sdesc p{width:min(190px,54%);font-size:12px;padding:11px 13px}
+  .sdesc .da{left:-6%}
+  .sdesc .db{right:-6%}
+}
 
 /* ── section heads ───────────────────────────────────── */
 section{padding:88px 0 0}
@@ -376,7 +388,7 @@ section[id],header[id]{scroll-margin-top:84px}
    they dissolve into each other. --seam is registered with @property,
    otherwise a custom property inside mask-image snaps instead of animating. */
 @property --seam{syntax:"<percentage>";initial-value:50%;inherits:true}
-.sfig{position:relative;margin:0;width:100%;max-width:420px;aspect-ratio:760/1026;
+.sfig{position:relative;margin:0;width:100%;max-width:376px;aspect-ratio:760/1026;
   --seam:50%;
   filter:drop-shadow(0 18px 26px rgba(20,21,26,.14))}
 .sfig::before{content:"";position:absolute;z-index:0;left:50%;bottom:1%;
@@ -510,21 +522,19 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
       </div>
     </div>
 
-    <div class="hside fx">
-      <div class="hpic">
-        <span class="ring"></span>
-        <figure class="sfig">
+    <div class="hpic fx">
+      <span class="ring"></span>
+      <figure class="sfig">
           <span class="sh a"><img src="assets/daria-art.webp"
                 alt="Daria Shchipanova, painted" width="760" height="1026"></span>
           <span class="sh b"><img src="assets/daria-code.webp"
                 alt="Daria Shchipanova, rendered in ASCII characters"
                 width="760" height="1026"></span>
-          <figcaption class="slab la">artist</figcaption>
-          <figcaption class="slab lb">&lt;engineer&gt;</figcaption>
-        </figure>
-      </div>
+        <figcaption class="slab la">artist</figcaption>
+        <figcaption class="slab lb">&lt;engineer&gt;</figcaption>
+      </figure>
       <div class="sdesc" id="sdesc">
-        <p class="dh">Two halves of the same job. Move across the page.</p>
+        <p class="dh">Two halves of the same job.<br>Move across the page.</p>
         <p class="da">3D, VFX, UI and animation. I model it, light it, rig it and make it
            move — then cut it down until it fits the budget.</p>
         <p class="db">Tooling, shaders and pipeline. JavaScript, Electron and Blender
