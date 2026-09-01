@@ -161,13 +161,48 @@ h1 em{font-style:normal;color:var(--ac);position:relative;white-space:nowrap}
   .hpic .ring{display:none}
 }
 
-.facts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:44px}
-@media(min-width:720px){.facts{grid-template-columns:repeat(4,1fr)}}
-.facts div{background:#fff;border:1px solid var(--rule);border-radius:14px;padding:18px 20px;
-  transition:transform .35s var(--e),box-shadow .35s var(--e)}
-.facts div:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(20,21,26,.08)}
-.facts .n{font-size:23px;font-weight:700;letter-spacing:-.7px;line-height:1}
-.facts .l{margin-top:6px;font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:var(--dim)}
+.facts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:44px}
+@media(min-width:820px){.facts{grid-template-columns:repeat(4,1fr)}}
+.facts .f{position:relative;background:#fff;border:1px solid var(--rule);border-radius:16px;
+  padding:20px 20px 18px;min-height:132px;display:flex;flex-direction:column;
+  justify-content:flex-end;overflow:hidden;
+  transition:transform .38s var(--e),box-shadow .38s var(--e),border-color .3s}
+.facts .f:hover{transform:translateY(-5px);box-shadow:0 14px 30px rgba(20,21,26,.10)}
+.facts .f::after{content:"";position:absolute;right:-40px;top:-40px;width:110px;height:110px;
+  border-radius:50%;background:var(--ac);opacity:.07;transition:transform .6s var(--e)}
+.facts .f:nth-child(2)::after{background:var(--ye);opacity:.22}
+.facts .f:nth-child(4)::after{background:#d1603d;opacity:.10}
+.facts .f:hover::after{transform:scale(1.35)}
+.facts .n{position:relative;font-size:clamp(28px,3.4vw,38px);font-weight:760;
+  letter-spacing:-1.2px;line-height:1;font-variant-numeric:tabular-nums}
+.facts .l{margin-top:8px;font-size:11px;letter-spacing:.9px;text-transform:uppercase;
+  color:var(--dim);line-height:1.4}
+
+/* stat card 3 — the interactive rotator */
+.rota{cursor:pointer;user-select:none}
+.rota:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.rota .rlab{position:relative;z-index:1;font-size:11px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--dim);font-weight:650;
+  position:absolute;top:18px;left:20px}
+.rota .rstage{position:relative;z-index:1;height:1.06em;
+  font-size:clamp(28px,3.4vw,38px);margin-bottom:2px}
+.rword{position:absolute;left:0;bottom:0;font-weight:760;letter-spacing:-1.2px;
+  line-height:1.06;white-space:nowrap;opacity:0;
+  transform:translateY(70%) rotate(4deg);
+  transition:opacity .4s var(--e),transform .4s var(--e)}
+.rword.in{opacity:1;transform:none}
+.rword.out{opacity:0;transform:translateY(-70%) rotate(-4deg)}
+.rword.c0{color:var(--ac)}
+.rword.c1{color:#d1603d}
+.rword.c2{color:var(--yed)}
+.rota .l{position:relative;z-index:1;transition:opacity .28s;min-height:2.8em}
+.rdots{position:relative;z-index:1;display:flex;gap:5px;margin-top:10px}
+.rdots i{width:5px;height:5px;border-radius:50%;background:var(--rule2);
+  transition:background .3s,width .3s var(--e)}
+.rdots i.on{background:var(--ac);width:15px;border-radius:99px}
+.rhint{position:absolute;z-index:1;right:16px;bottom:14px;
+  font-family:"Caveat","Segoe Script",cursive;font-size:16px;color:var(--dim);
+  transform:rotate(-6deg);opacity:.8}
 
 /* ── section heads ───────────────────────────────────── */
 section{padding:88px 0 0}
@@ -255,17 +290,30 @@ section{padding:88px 0 0}
 
 /* ── process ─────────────────────────────────────────── */
 .flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:16px}
-.st{padding:26px 24px;border:1px solid var(--rule);border-radius:16px;
-  background:#fff;transition:transform .35s var(--e),box-shadow .35s var(--e)}
-.st:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(20,21,26,.08)}
-.st .k{font-family:ui-monospace,Consolas,monospace;font-size:11px;color:var(--ac);letter-spacing:1px}
-.st h4{margin:13px 0 9px;font-size:16.5px;font-weight:640;letter-spacing:-.02em}
-.st p{margin:0;font-size:14px;color:var(--mid);line-height:1.62}
+.st{position:relative;padding:26px 24px;border:1px solid var(--rule);border-radius:18px;
+  background:#fff;overflow:hidden;
+  transition:transform .38s var(--e),box-shadow .38s var(--e),border-color .3s}
+.st::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:var(--sc)}
+.st::after{content:"";position:absolute;right:-52px;bottom:-52px;width:150px;height:150px;
+  border-radius:50%;background:var(--sc);opacity:.10;transition:transform .65s var(--e)}
+.st:hover::after{transform:scale(1.5)}
+.st .k{color:var(--sc)}
+.st h4 span{color:var(--sc)}
+.st p b{color:var(--sc)}
+.st1{--sc:#0a7d92}
+.st2{--sc:#c9a91f}
+.st3{--sc:#d1603d}
+.st4{--sc:#2f8f5b}
+.st:hover{transform:translateY(-6px);border-color:var(--sc);
+  box-shadow:0 16px 34px rgba(20,21,26,.11)}
+.st .k{font-family:ui-monospace,Consolas,monospace;font-size:11px;letter-spacing:1px;font-weight:700}
+.st h4{position:relative;margin:13px 0 9px;font-size:16.5px;font-weight:640;letter-spacing:-.02em}
+.st p{position:relative;margin:0;font-size:14px;color:var(--mid);line-height:1.62}
 .st p b{color:var(--ink);font-weight:600}
 
 /* ── about ───────────────────────────────────────────── */
 .ab{display:grid;gap:46px;grid-template-columns:1fr}
-@media(min-width:900px){.ab{grid-template-columns:340px 1fr;gap:54px;align-items:start}}
+@media(min-width:900px){.ab{grid-template-columns:1fr;gap:0}}
 /* interactive discipline rotator — replaces the old portrait */
 .rota{position:relative;background:#fff;border:1px solid var(--rule);border-radius:20px;
   padding:26px 24px 22px;cursor:pointer;user-select:none;overflow:hidden;
@@ -393,10 +441,22 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
 
   <div class="wrap">
     <div class="facts fx">
-      <div><div class="n">12–13</div><div class="l">Playables / month</div></div>
-      <div><div class="n">5 MB</div><div class="l">Build ceiling</div></div>
-      <div><div class="n">2D → 3D</div><div class="l">Puzzle to shooter</div></div>
-      <div><div class="n">30+</div><div class="l">Shipped titles</div></div>
+      <div class="f"><div class="n" data-to="13" data-pre="12–">12–13</div>
+        <div class="l">Playables a month</div></div>
+      <div class="f"><div class="n" data-to="5" data-suf=" MB">5 MB</div>
+        <div class="l">Build ceiling, never missed</div></div>
+
+      <div class="f rota" id="rota" role="button" tabindex="0"
+           aria-label="Cycle through the disciplines I work in">
+        <span class="rlab">I do</span>
+        <div class="rstage" id="rstage"></div>
+        <div class="l" id="rcap"></div>
+        <div class="rdots" id="rdots"></div>
+        <span class="rhint">click</span>
+      </div>
+
+      <div class="f"><div class="n" data-to="30" data-suf="+">30+</div>
+        <div class="l">Shipped game titles</div></div>
     </div>
   </div>
 </header>
@@ -428,16 +488,16 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
       <p>The half of the job that never shows up in the creative.</p>
     </div>
     <div class="flow fx">
-      <div class="st"><div class="k">01 / TOOLING</div><h4>Electron production tool</h4>
+      <div class="st st1"><div class="k">01 / TOOLING</div><h4>Electron production tool</h4>
         <p>Built around our playable template. <b>Generates particle emitters</b> and takes
            the repetitive setup out of every build.</p></div>
-      <div class="st"><div class="k">02 / PROCEDURAL</div><h4>Blender systems</h4>
+      <div class="st st2"><div class="k">02 / PROCEDURAL</div><h4>Blender systems</h4>
         <p><b>Geometry Nodes</b> for scattering and instancing, plus AI-assisted scripts for
            renaming and vertex-index restructuring.</p></div>
-      <div class="st"><div class="k">03 / VFX</div><h4>Shaders &amp; effects</h4>
+      <div class="st st3"><div class="k">03 / VFX</div><h4>Shaders &amp; effects</h4>
         <p>Custom shaders authored for <b>reusable VFX workflows</b> across creatives, not
            one-off effects per ad.</p></div>
-      <div class="st"><div class="k">04 / BUDGET</div><h4>Optimisation</h4>
+      <div class="st st4"><div class="k">04 / BUDGET</div><h4>Optimisation</h4>
         <p>Atlasing, mesh reduction, <b>particle and draw-call budgets</b> — holding quality
            against a ceiling that never moves.</p></div>
     </div>
@@ -606,6 +666,25 @@ var PLAYABLES = [
     ifr.src = "play/" + slug + ".html";
     f.appendChild(ifr);
   });
+
+  /* ---------- stat counters ---------- */
+  if (!reduce) {
+    var co = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        co.unobserve(e.target);
+        var el = e.target, to = +el.dataset.to,
+            pre = el.dataset.pre || "", suf = el.dataset.suf || "",
+            t0 = performance.now();
+        (function tick(now) {
+          var k = Math.min(1, (now - t0) / 1100);
+          el.textContent = pre + Math.round(to * (1 - Math.pow(1 - k, 3))) + suf;
+          if (k < 1) requestAnimationFrame(tick);
+        })(t0);
+      });
+    }, { threshold: .5 });
+    document.querySelectorAll("[data-to]").forEach(function (el) { co.observe(el); });
+  }
 
   /* ---------- discipline rotator ---------- */
   (function () {
