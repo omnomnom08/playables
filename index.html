@@ -797,7 +797,7 @@ var PLAYABLES = [
         '<div class="sub"><span class="tg">' + esc(p.tags) + "</span>" +
           '<span class="sz">' + esc(p.size) + "</span></div>" +
         '<div class="did"><b>What I did</b><ul>' +
-          (Array.isArray(p.did) ? p.did : String(p.did).split(/,s*/)).map(function (d) {
+          (Array.isArray(p.did) ? p.did : String(p.did).split(/,\s*/)).map(function (d) {
             return "<li>" + esc(d) + "</li>";
           }).join("") + "</ul></div>" +
         (p.ph ? "" : '<div class="acts">' +
