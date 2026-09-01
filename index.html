@@ -7,6 +7,9 @@
 <meta name="description" content="Playable ads, VFX, shaders and the tooling that ships them. Technical artist, 5+ years in mobile games.">
 <meta property="og:title" content="Daria Shchipanova — Technical Artist">
 <meta property="og:description" content="Playable ads you can actually play. VFX, 3D, shaders and the pipeline behind them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
 <style>
 /* ══════════════════════════════════════════════════════════
    Light editorial. Paper, ink, one teal accent.
@@ -15,9 +18,9 @@
    by JS, so a script failure can never blank the page.
    ══════════════════════════════════════════════════════════ */
 :root{
-  --pa:#faf9f7; --pa2:#f2f0ec;
+  --pa:#fdfbf6; --pa2:#f5f1e8;
   --ink:#14151a; --mid:#6e7178; --dim:#9a9da3;
-  --rule:#e2e0dc; --rule2:#d3d0ca;
+  --rule:#e8e2d6; --rule2:#d8d1c2;
   --ac:#0a7d92; --ac2:#0e9fb8;
   --ye:#f5d742; --yed:#c9a91f;
   --max:1240px;
@@ -68,7 +71,7 @@ body.hascur.hot #cur{width:60px;height:60px;margin:-30px 0 0 -30px;
 @media(hover:none),(pointer:coarse){#cur,#curd{display:none}}
 
 /* ── nav ─────────────────────────────────────────────── */
-nav{position:sticky;top:0;z-index:100;background:rgba(250,249,247,.86);
+nav{position:sticky;top:0;z-index:100;background:rgba(253,251,246,.88);
   backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}
 nav .wrap{display:flex;align-items:center;gap:26px;height:66px}
 .brand{font-weight:600;font-size:15px;letter-spacing:-.2px}
@@ -77,7 +80,7 @@ nav ul{list-style:none;display:flex;gap:24px;margin:0 0 0 auto;padding:0;
   font-size:13px;letter-spacing:.4px;font-weight:500}
 nav ul a{color:var(--mid);transition:color .2s}
 nav ul a:hover{color:var(--ac)}
-.nbtn{background:var(--ink);color:var(--pa);padding:9px 17px;border-radius:6px;
+.nbtn{background:var(--ink);color:var(--pa);padding:9px 18px;border-radius:99px;
   font-size:13px;font-weight:600;transition:.25s var(--e);white-space:nowrap}
 .nbtn:hover{background:var(--ac);transform:translateY(-1px)}
 @media(max-width:860px){nav ul{display:none}.brand i{display:none}}
@@ -94,33 +97,82 @@ nav ul a:hover{color:var(--ac)}
 .btn.ye:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(245,215,66,.42)}
 
 /* ── hero ────────────────────────────────────────────── */
-.hero{padding:80px 0 62px;border-bottom:1px solid var(--rule)}
-.kick{display:flex;align-items:center;gap:12px;font-size:11.5px;font-weight:600;
-  letter-spacing:1.7px;text-transform:uppercase;color:var(--ac)}
-.kick s{width:30px;height:1px;background:var(--ac);opacity:.45;text-decoration:none}
-.kick b{width:7px;height:7px;border-radius:50%;background:var(--ye);
-  box-shadow:0 0 0 0 rgba(245,215,66,.8);animation:pl 2.2s infinite}
-@keyframes pl{70%{box-shadow:0 0 0 11px rgba(245,215,66,0)}100%{box-shadow:0 0 0 0 rgba(245,215,66,0)}}
-h1{margin:24px 0 0;font-size:clamp(42px,8vw,96px);line-height:.94;font-weight:680;
-  letter-spacing:-.045em;max-width:15ch}
-h1 .ln{display:block;overflow:hidden;padding-bottom:.04em}
+.hero{padding:56px 0 54px;border-bottom:1px solid var(--rule)}
+.hgrid{display:grid;gap:30px;grid-template-columns:1fr;align-items:center}
+@media(min-width:940px){.hgrid{grid-template-columns:1.15fr .85fr;gap:44px}}
+.kick{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:600;
+  color:var(--ink);background:#fff;border:1px solid var(--rule2);border-radius:99px;
+  padding:8px 17px;box-shadow:0 2px 0 var(--rule2)}
+.kick b{width:8px;height:8px;border-radius:50%;background:#37c26b;
+  box-shadow:0 0 0 0 rgba(55,194,107,.75);animation:pl 2.4s infinite}
+@keyframes pl{70%{box-shadow:0 0 0 10px rgba(55,194,107,0)}100%{box-shadow:0 0 0 0 rgba(55,194,107,0)}}
+.wv{display:inline-block;transform-origin:70% 70%;animation:wave 3.2s ease-in-out infinite}
+@keyframes wave{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(15deg)}
+  80%{transform:rotate(-10deg)}90%{transform:rotate(12deg)}}
+h1{margin:22px 0 0;font-size:clamp(38px,6.4vw,74px);line-height:1.03;font-weight:720;
+  letter-spacing:-.035em;max-width:15ch}
+h1 .ln{display:block;overflow:visible;padding-bottom:.02em}
 h1 .ln>span{display:inline-block}
-h1 em{font-style:normal;color:var(--ac)}
-.helo{display:grid;gap:42px;grid-template-columns:1fr;margin-top:36px;align-items:end}
-@media(min-width:900px){.helo{grid-template-columns:1.25fr .75fr;gap:58px}}
-.lede{margin:0;font-size:clamp(16px,1.8vw,19px);color:var(--mid);max-width:52ch}
+h1 em{font-style:normal;color:var(--ac);position:relative;white-space:nowrap}
+.uline{position:absolute;left:-2%;bottom:-.16em;width:104%;height:.3em;overflow:visible}
+.uline path{fill:none;stroke:var(--ye);stroke-width:9;stroke-linecap:round;
+  stroke-dasharray:340;stroke-dashoffset:340;animation:draw 1s var(--e) .85s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.lede{margin:22px 0 0;font-size:clamp(16px,1.7vw,18.5px);color:var(--mid);max-width:48ch}
 .lede b{color:var(--ink);font-weight:600}
-.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
-.facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);
-  border:1px solid var(--rule)}
-.facts div{background:var(--pa);padding:16px 18px}
-.facts .n{font-size:21px;font-weight:650;letter-spacing:-.6px;line-height:1}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{border-radius:99px}
+.ar{display:inline-block;animation:bob 1.9s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(4px)}}
+
+.proof{margin-top:32px;padding-top:22px;border-top:1px dashed var(--rule2)}
+.proof .pl{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);
+  font-weight:600}
+.proof .pn{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:11px}
+.proof .pn span{font-size:14.5px;font-weight:600;color:var(--mid);opacity:.8;
+  transition:color .25s,opacity .25s}
+.proof .pn span:hover{color:var(--ac);opacity:1}
+
+/* cut-out portrait */
+.hpic{position:relative;display:flex;justify-content:center;align-items:flex-end;
+  min-height:340px}
+.hpic img{position:relative;z-index:2;width:100%;max-width:400px;height:auto;
+  filter:drop-shadow(0 22px 34px rgba(20,21,26,.20))}
+.hpic .blob{position:absolute;z-index:1;width:86%;max-width:400px;aspect-ratio:1/1.06;
+  bottom:0;background:var(--ye);opacity:.9;
+  border-radius:52% 48% 46% 54%/56% 52% 48% 44%;
+  animation:morph 13s ease-in-out infinite}
+@keyframes morph{
+  50%{border-radius:46% 54% 55% 45%/48% 46% 54% 52%;transform:rotate(-3deg) scale(1.03)}}
+.hpic .ring{position:absolute;z-index:0;width:96%;max-width:440px;aspect-ratio:1;
+  bottom:-6%;border:2px dashed var(--rule2);border-radius:50%;
+  animation:spin 60s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hpic .sticker{position:absolute;z-index:3;right:2%;top:12%;
+  background:var(--ink);color:var(--pa);font-size:15px;font-weight:700;line-height:1.15;
+  padding:12px 15px;border-radius:12px;text-align:center;transform:rotate(7deg);
+  box-shadow:0 8px 20px rgba(20,21,26,.24)}
+.hpic .sticker i{font-style:normal;font-size:10px;font-weight:500;opacity:.7;
+  letter-spacing:.6px}
+@media(max-width:939px){
+  .hpic{margin-top:8px}
+  .hpic img{max-width:290px}
+  .hpic .blob{max-width:290px}
+  .hpic .ring{display:none}
+}
+
+.facts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:44px}
+@media(min-width:720px){.facts{grid-template-columns:repeat(4,1fr)}}
+.facts div{background:#fff;border:1px solid var(--rule);border-radius:14px;padding:18px 20px;
+  transition:transform .35s var(--e),box-shadow .35s var(--e)}
+.facts div:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(20,21,26,.08)}
+.facts .n{font-size:23px;font-weight:700;letter-spacing:-.7px;line-height:1}
 .facts .l{margin-top:6px;font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:var(--dim)}
 
 /* ── section heads ───────────────────────────────────── */
 section{padding:88px 0 0}
 .shd{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;
-  padding-bottom:16px;border-bottom:1px solid var(--ink);margin-bottom:42px}
+  padding-bottom:16px;border-bottom:2px solid var(--ink);margin-bottom:42px;position:relative}
 .shd .n{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--ac);
   font-weight:600;letter-spacing:1px}
 .shd h2{margin:0;font-size:clamp(26px,4vw,42px);font-weight:660;letter-spacing:-.04em}
@@ -130,7 +182,7 @@ section{padding:88px 0 0}
 /* ── playable grid ───────────────────────────────────── */
 .pg{display:grid;gap:34px 26px;grid-template-columns:repeat(auto-fill,minmax(244px,1fr))}
 .pcard{display:flex;flex-direction:column}
-.frame{position:relative;aspect-ratio:9/16;border-radius:20px;overflow:hidden;
+.frame{position:relative;aspect-ratio:9/16;border-radius:24px;overflow:hidden;
   background:#111;border:1px solid var(--rule2);
   box-shadow:0 2px 4px rgba(20,21,26,.05),0 14px 34px rgba(20,21,26,.10);
   transition:transform .5s var(--e),box-shadow .5s var(--e)}
@@ -194,11 +246,18 @@ section{padding:88px 0 0}
 .lnk:hover{border-color:var(--ac)}
 .note{margin:32px 0 0;font-size:13px;color:var(--dim);max-width:62ch}
 
+.tip{display:flex;align-items:flex-end;gap:10px;margin:-14px 0 16px 4px;max-width:420px}
+.tip svg{width:64px;height:40px;flex:none;fill:none;stroke:var(--ye);stroke-width:5;
+  stroke-linecap:round;stroke-linejoin:round;transform:scaleX(-1) rotate(6deg)}
+.tip span{font-family:"Caveat","Segoe Script","Bradley Hand",cursive;font-size:22px;
+  color:var(--ink);opacity:.72;line-height:1.15;padding-bottom:6px}
+@media(max-width:680px){.tip{display:none}}
+
 /* ── process ─────────────────────────────────────────── */
-.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:0}
-.st{padding:26px 24px;border:1px solid var(--rule);margin:-.5px;
-  background:rgba(250,249,247,.6);transition:background .3s}
-.st:hover{background:#fff}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:16px}
+.st{padding:26px 24px;border:1px solid var(--rule);border-radius:16px;
+  background:#fff;transition:transform .35s var(--e),box-shadow .35s var(--e)}
+.st:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(20,21,26,.08)}
 .st .k{font-family:ui-monospace,Consolas,monospace;font-size:11px;color:var(--ac);letter-spacing:1px}
 .st h4{margin:13px 0 9px;font-size:16.5px;font-weight:640;letter-spacing:-.02em}
 .st p{margin:0;font-size:14px;color:var(--mid);line-height:1.62}
@@ -208,7 +267,7 @@ section{padding:88px 0 0}
 .ab{display:grid;gap:46px;grid-template-columns:1fr}
 @media(min-width:900px){.ab{grid-template-columns:274px 1fr;gap:58px}}
 .port figure{margin:0}
-.port .ph{width:100%;aspect-ratio:1;overflow:hidden;border:1px solid var(--rule2);border-radius:4px}
+.port .ph{width:100%;aspect-ratio:1;overflow:hidden;border:1px solid var(--rule2);border-radius:18px}
 .port .ph img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.06);
   transition:filter .6s var(--e)}
 .port:hover .ph img{filter:grayscale(0) contrast(1)}
@@ -266,31 +325,49 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
 </nav>
 
 <header class="hero" id="top">
-  <div class="wrap">
-    <div class="kick fx"><s></s><b></b>Technical Artist — Playable Ads</div>
-    <h1>
-      <span class="ln"><span>I make ads</span></span>
-      <span class="ln"><span>you can <em>play</em>.</span></span>
-    </h1>
-    <div class="helo">
-      <div>
-        <p class="lede fx">
-          Five years in mobile games, most of it where art meets engineering. I build the
-          creative <b>and</b> the pipeline that produces it — scene assembly, animation, VFX,
-          shaders, and the tools that take the repetitive half out of the job.
-          <span class="ser">Everything below runs live on this page.</span>
-        </p>
-        <div class="cta fx">
-          <a class="btn pri" href="#work">Play my work ↓</a>
-          <a class="btn sec" href="#contact">Get in touch</a>
+  <div class="wrap hgrid">
+
+    <div class="hcopy">
+      <div class="kick fx"><b></b>Hey — I'm Daria <span class="wv">👋</span></div>
+      <h1>
+        <span class="ln"><span>I make ads</span></span>
+        <span class="ln"><span>you can
+          <em class="mark">actually play<svg class="uline" viewBox="0 0 300 22" preserveAspectRatio="none"
+             aria-hidden="true"><path d="M4 15C52 6 108 4 160 7c40 2 82 6 136 2"/></svg></em>.</span></span>
+      </h1>
+      <p class="lede fx">
+        I'm a technical artist — five years in mobile games, most of it where art meets
+        engineering. I build the creative <b>and</b> the pipeline that produces it, at
+        <b>12–13 playables a month</b>, every one under the 5 MB ceiling.
+      </p>
+      <div class="cta fx">
+        <a class="btn pri" href="#work">Play my work <span class="ar">↓</span></a>
+        <a class="btn sec" href="#contact">Get in touch</a>
+      </div>
+      <div class="proof fx">
+        <span class="pl">Ads I've built for</span>
+        <div class="pn">
+          <span>Playgendary</span><span>Azur Games</span><span>MY.GAMES</span>
+          <span>Flexus</span><span>TwinCrab</span><span>Nexters</span>
         </div>
       </div>
-      <div class="facts fx">
-        <div><div class="n">12–13</div><div class="l">Playables / month</div></div>
-        <div><div class="n">5 MB</div><div class="l">Build ceiling</div></div>
-        <div><div class="n">2D → 3D</div><div class="l">Puzzle to shooter</div></div>
-        <div><div class="n">30+</div><div class="l">Shipped titles</div></div>
-      </div>
+    </div>
+
+    <div class="hpic fx">
+      <span class="blob"></span>
+      <span class="ring"></span>
+      <img src="assets/daria-cutout.webp" alt="Daria Shchipanova" width="820" height="1045">
+      <span class="sticker">5&nbsp;MB<br><i>every time</i></span>
+    </div>
+
+  </div>
+
+  <div class="wrap">
+    <div class="facts fx">
+      <div><div class="n">12–13</div><div class="l">Playables / month</div></div>
+      <div><div class="n">5 MB</div><div class="l">Build ceiling</div></div>
+      <div><div class="n">2D → 3D</div><div class="l">Puzzle to shooter</div></div>
+      <div><div class="n">30+</div><div class="l">Shipped titles</div></div>
     </div>
   </div>
 </header>
@@ -303,6 +380,10 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
       <span class="n">01</span>
       <h2>Playables</h2>
       <p>Real builds, not captures. Press play — they run right here.</p>
+    </div>
+    <div class="tip fx">
+      <svg viewBox="0 0 120 74" aria-hidden="true"><path d="M6 6c26 2 44 14 52 32 4 9 5 19 4 28"/><path d="M53 58l9 10 11-8"/></svg>
+      <span>this one is all mine — art, code, the lot</span>
     </div>
     <div class="pg" id="pg"></div>
     <p class="note fx">Every creative here is the shipped build. They start on click so the
