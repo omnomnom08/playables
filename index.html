@@ -180,26 +180,26 @@ h1 em{font-style:normal;color:var(--ac);position:relative;white-space:nowrap}
 .facts .f:hover::after{transform:scale(1.35)}
 .facts .n{position:relative;font-size:clamp(28px,3.4vw,38px);font-weight:760;
   letter-spacing:-1.2px;line-height:1;font-variant-numeric:tabular-nums}
-.odo{display:inline-flex;align-items:baseline;line-height:1}
-.odo .dg{display:inline-block;height:1em;overflow:hidden;vertical-align:baseline}
-.odo .rl{display:block;will-change:transform;
-  transition:transform 1.5s cubic-bezier(.16,1,.3,1)}
-.odo .rl b{display:block;height:1em;line-height:1;font-weight:inherit;
-  font-variant-numeric:tabular-nums}
+.odo{--cell:1.16em;display:inline-flex;align-items:flex-start;line-height:1}
+.odo .tx{display:block;height:var(--cell);line-height:var(--cell);white-space:pre}
+.odo .dg{display:block;height:var(--cell);overflow:hidden}
+.odo .rl{display:block;will-change:transform,filter}
+.odo .rl b{display:block;height:var(--cell);line-height:var(--cell);font-weight:inherit;
+  font-variant-numeric:tabular-nums;text-align:center}
+.odo .rl.blur{filter:blur(.7px)}
 
 .facts .l{margin-top:8px;font-size:11px;letter-spacing:.9px;text-transform:uppercase;
   color:var(--dim);line-height:1.4}
 
 /* stat card 3 — the interactive rotator */
-.rota{cursor:pointer;user-select:none}
+.rota{cursor:pointer;user-select:none;justify-content:flex-start;padding-right:34px}
 .rota:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-.rota{justify-content:flex-start;padding-right:34px}
 .rota .rlab{position:relative;z-index:1;font-size:11px;letter-spacing:1.5px;
   text-transform:uppercase;color:var(--dim);font-weight:650;display:block}
-.rota .rstage{position:relative;z-index:1;height:1.06em;margin:auto 0 2px;
+.rota .rstage{position:relative;z-index:1;height:1.16em;margin:auto 0 2px;overflow:hidden;
   font-size:clamp(28px,3.4vw,38px)}
 .rword{position:absolute;left:0;bottom:0;font-weight:760;letter-spacing:-1.2px;
-  line-height:1.06;white-space:nowrap;opacity:0;
+  line-height:1.16;white-space:nowrap;opacity:0;
   transform:translateY(70%) rotate(4deg);
   transition:opacity .4s var(--e),transform .4s var(--e)}
 .rword.in{opacity:1;transform:none}
@@ -681,54 +681,79 @@ var PLAYABLES = [
     f.appendChild(ifr);
   });
 
-  /* ---------- stat odometers: each digit rolls up through 0-9 ---------- */
+  /* ---------- stat odometers ----------
+     Each digit is a reel of numerals in a clipped cell. It dips down
+     (anticipation), spins up through two full 0-9 passes with a motion
+     blur, then overshoots a touch and settles — like a mechanical counter.
+     ------------------------------------------------------------------ */
   (function () {
     var odos = [].slice.call(document.querySelectorAll(".odo"));
     if (!odos.length) return;
-    var LOOPS = 2;                       /* full 0-9 spins before landing */
+    var LOOPS = 2;
 
     odos.forEach(function (o) {
       var val = o.dataset.val || "",
           pre = o.dataset.pre || "",
           suf = o.dataset.suf || "";
       o.textContent = "";
-      if (pre) o.appendChild(document.createTextNode(pre));
+      var txt = function (s) {
+        var t = document.createElement("span");
+        t.className = "tx"; t.textContent = s; o.appendChild(t);
+      };
+      if (pre) txt(pre);
       val.split("").forEach(function (ch) {
-        if (!/[0-9]/.test(ch)) { o.appendChild(document.createTextNode(ch)); return; }
+        if (!/[0-9]/.test(ch)) { txt(ch); return; }
         var dg = document.createElement("span"); dg.className = "dg";
         var rl = document.createElement("span"); rl.className = "rl";
-        for (var n = 0; n <= LOOPS * 10 + (+ch); n++) {
+        var stop = LOOPS * 10 + (+ch);
+        for (var n = 0; n <= stop; n++) {
           var b = document.createElement("b"); b.textContent = n % 10; rl.appendChild(b);
         }
-        rl.dataset.stop = LOOPS * 10 + (+ch);
+        rl.dataset.stop = stop;
         dg.appendChild(rl); o.appendChild(dg);
       });
-      if (suf) o.appendChild(document.createTextNode(suf));
+      if (suf) txt(suf);
     });
 
+    var land = function (rl) {
+      return "translateY(calc(var(--cell) * -" + rl.dataset.stop + "))";
+    };
+
     if (reduce) {
-      /* land instantly, no spin */
       odos.forEach(function (o) {
-        o.querySelectorAll(".rl").forEach(function (rl) {
-          rl.style.transition = "none";
-          rl.style.transform = "translateY(-" + rl.dataset.stop + "em)";
+        [].forEach.call(o.querySelectorAll(".rl"), function (rl) {
+          rl.style.transform = land(rl);
         });
       });
       return;
+    }
+
+    function roll(o, cardDelay) {
+      [].forEach.call(o.querySelectorAll(".rl"), function (rl, i) {
+        var d = cardDelay + i * 110;
+        /* 1 — dip down, the wind-up */
+        setTimeout(function () {
+          rl.style.transition = "transform .22s cubic-bezier(.4,0,.6,1)";
+          rl.style.transform = "translateY(calc(var(--cell) * .34))";
+        }, d);
+        /* 2 — spin up, overshoot slightly, settle */
+        setTimeout(function () {
+          rl.classList.add("blur");
+          rl.style.transition = "transform 1.35s cubic-bezier(.13,.85,.2,1.035)," +
+                                "filter .5s ease .55s";
+          rl.style.transform = land(rl);
+        }, d + 230);
+        setTimeout(function () { rl.classList.remove("blur"); }, d + 230 + 1100);
+      });
     }
 
     var oo = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
         if (!e.isIntersecting) return;
         oo.unobserve(e.target);
-        e.target.querySelectorAll(".rl").forEach(function (rl, i) {
-          rl.style.transitionDelay = (i * 0.13) + "s";
-          requestAnimationFrame(function () {
-            rl.style.transform = "translateY(-" + rl.dataset.stop + "em)";
-          });
-        });
+        roll(e.target, odos.indexOf(e.target) * 170);
       });
-    }, { threshold: .6 });
+    }, { threshold: .55 });
     odos.forEach(function (o) { oo.observe(o); });
   })();
 
