@@ -73,6 +73,11 @@ body.hascur #glow{opacity:1}
 body.hascur #cur,body.hascur #curd{opacity:1}
 body.hascur.hot #cur{width:60px;height:60px;margin:-30px 0 0 -30px;
   background:rgba(10,125,146,.1);border-color:var(--ac2)}
+/* over a playable the native cursor is enough — ours only gets in the way */
+body.oncard #cur,body.oncard #curd{opacity:0}
+/* the glow parks behind whichever card the cursor is on */
+body.oncard #glow{opacity:1;transform-origin:center;
+  filter:blur(52px);transition:opacity .6s ease,filter .6s ease}
 @media(hover:none),(pointer:coarse){#cur,#curd{display:none}}
 
 /* ── nav ─────────────────────────────────────────────── */
@@ -1052,12 +1057,33 @@ var PLAYABLES = [
       document.body.classList.toggle("hot",
         !!(t.closest && t.closest("a,button,.start,.frame,.pcard")));
     }, { passive: true });
-    var glow = document.getElementById("glow"), gx = tx, gy = ty;
+    var glow = document.getElementById("glow"), gx = tx, gy = ty, parked = null;
+
+    /* Over a playable the custom cursor is in the way — and once the pointer is
+       inside a running iframe this document stops getting mousemove at all, so
+       the ring would freeze mid-card. Hide it, and park the glow behind the
+       card the cursor is on. */
+    var grid = document.getElementById("pg");
+    grid.addEventListener("mouseover", function (e) {
+      var f = e.target.closest && e.target.closest(".frame");
+      if (!f) return;
+      document.body.classList.add("oncard");
+      var r = f.getBoundingClientRect();
+      parked = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    });
+    grid.addEventListener("mouseout", function (e) {
+      var f = e.target.closest && e.target.closest(".frame");
+      if (!f || (e.relatedTarget && f.contains(e.relatedTarget))) return;
+      document.body.classList.remove("oncard");
+      parked = null;
+    });
+
     (function ring() {
       cx += (tx - cx) * .16; cy += (ty - cy) * .16;
       cur.style.transform = "translate(" + cx + "px," + cy + "px)";
       /* much slower follow = a trailing smear rather than a dot */
-      gx += (tx - gx) * .045; gy += (ty - gy) * .045;
+      var gtx = parked ? parked.x : tx, gty = parked ? parked.y : ty;
+      gx += (gtx - gx) * .045; gy += (gty - gy) * .045;
       if (glow) glow.style.transform = "translate(" + gx + "px," + gy + "px)";
       requestAnimationFrame(ring);
     })();
