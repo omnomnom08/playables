@@ -818,10 +818,34 @@ var PLAYABLES = [
       "</div></article>";
   }).join("");
 
+  /* ---------- tear a running build back down to its poster ---------- */
+  function stop(f) {
+    var slug = f.dataset.slug, p = null;
+    for (var i = 0; i < PLAYABLES.length; i++)
+      if (PLAYABLES[i].slug === slug) { p = PLAYABLES[i]; break; }
+    if (!p) return;
+    ["iframe", ".boot", ".post", ".start"].forEach(function (sel) {
+      var el = f.querySelector(sel); if (el) el.remove();   /* removing the iframe kills its audio */
+    });
+    f.insertAdjacentHTML("beforeend",
+      '<img class="post" src="assets/posters/' + esc(slug) + '.webp" alt="" ' +
+      'loading="lazy" decoding="async" width="480" height="854">' +
+      '<div class="start"><span class="ring">' + PLAY + "</span>" +
+      "<b>Play</b><s>" + esc(p.size) + "</s></div>");
+    f.classList.remove("live");
+  }
+
   /* ---------- click to start ---------- */
   document.getElementById("pg").addEventListener("click", function (e) {
     var s = e.target.closest(".start"); if (!s) return;
     var f = s.parentNode, slug = f.dataset.slug; if (!slug) return;
+
+    /* only one build runs at a time — otherwise the soundtracks stack up and
+       every card keeps its own render loop going */
+    [].forEach.call(document.querySelectorAll(".frame.live"), function (o) {
+      if (o !== f) stop(o);
+    });
+
     s.remove();
     f.insertAdjacentHTML("beforeend", '<div class="boot"><i></i></div>');
     var ifr = document.createElement("iframe");
