@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daria Shchipanova — Technical Artist, Playable Ads</title>
+<meta name="description" content="Playable ad creatives, pipeline tooling and technical art by Daria Shchipanova.">
+<style>
+/* ---- CV palette. Swap these values to match your CV exactly. ---- */
+:root{
+  --teal:#00a3c4;          /* CV header band */
+  --teal-dark:#00819c;     /* hover / links */
+  --gold:#ffd24d;          /* CV date chips -> build-size tags */
+  --ink:#1c1c1c;
+  --muted:#6b6b6b;
+  --line:#e3e3e3;
+  --bg:#fff;
+  --card:#fafafa;
+  --max:1040px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.55 "Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--teal-dark)}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+
+/* ---- header band (mirrors the CV) ---- */
+header{background:var(--teal);color:#fff;padding:38px 0 30px;text-align:center}
+header h1{margin:0;font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:.5px}
+header .role{margin:6px 0 0;font-size:clamp(15px,2.6vw,20px);font-weight:400;opacity:.95}
+.links{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.links a{display:inline-block;padding:7px 15px;border:1.5px solid rgba(255,255,255,.65);
+  border-radius:3px;color:#fff;text-decoration:none;font-size:14px;transition:.15s}
+.links a:hover{background:#fff;color:var(--teal-dark);border-color:#fff}
+
+/* ---- intro ---- */
+.intro{padding:26px 0 6px;font-size:17px;max-width:78ch}
+.intro strong{color:var(--teal-dark)}
+
+/* ---- ruled section heading (mirrors the CV) ---- */
+h2{font-size:21px;margin:38px 0 4px;padding-bottom:5px;border-bottom:2px solid var(--ink);
+  display:flex;align-items:baseline;gap:10px}
+h2 small{font-weight:400;font-size:13px;color:var(--muted);margin-left:auto}
+
+/* ---- playable grid ---- */
+.grid{display:grid;gap:18px;margin-top:20px;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.card{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--card);
+  display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:.15s}
+.card:hover{border-color:var(--teal);box-shadow:0 4px 14px rgba(0,0,0,.09);transform:translateY(-2px)}
+.thumb{aspect-ratio:4/5;background:var(--teal);display:flex;align-items:center;justify-content:center;
+  padding:16px;text-align:center;position:relative;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.thumb span{color:#fff;font-weight:600;font-size:17px;line-height:1.3;z-index:1}
+.meta{padding:12px 14px 14px}
+.meta h3{margin:0;font-size:15px;font-weight:700}
+.meta p{margin:5px 0 0;font-size:13.5px;color:var(--muted);line-height:1.45}
+.tags{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--gold);color:#4a3800;font-size:11.5px;font-weight:700;
+  padding:3px 9px;border-radius:3px;white-space:nowrap}
+.chip.ghost{background:transparent;color:var(--muted);border:1px solid var(--line);font-weight:600}
+
+/* ---- featured ---- */
+.feature{margin-top:20px;border:1px solid var(--line);border-left:4px solid var(--gold);
+  border-radius:6px;padding:20px 22px;background:var(--card)}
+.feature h3{margin:0 0 6px;font-size:18px}
+.feature p{margin:0 0 14px;color:var(--muted);font-size:14.5px;max-width:70ch}
+.btnrow{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-block;padding:9px 18px;border-radius:4px;text-decoration:none;
+  font-size:14px;font-weight:600}
+.btn.solid{background:var(--teal);color:#fff}
+.btn.solid:hover{background:var(--teal-dark)}
+.btn.out{border:1.5px solid var(--teal);color:var(--teal-dark)}
+.btn.out:hover{background:var(--teal);color:#fff}
+.btn.dis{border:1.5px solid var(--line);color:var(--muted);cursor:not-allowed}
+
+/* ---- tooling list ---- */
+ul.tool{list-style:none;padding:0;margin:16px 0 0}
+ul.tool li{position:relative;padding:0 0 0 20px;margin-bottom:10px;font-size:15px;max-width:80ch}
+ul.tool li::before{content:"";position:absolute;left:0;top:.55em;width:8px;height:8px;
+  border-radius:50%;background:var(--gold)}
+ul.tool strong{color:var(--teal-dark)}
+
+footer{margin-top:52px;border-top:1px solid var(--line);padding:22px 0 44px;
+  color:var(--muted);font-size:14px;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between}
+footer a{color:var(--teal-dark)}
+@media(max-width:520px){.thumb{aspect-ratio:1/1}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Daria Shchipanova</h1>
+    <p class="role">Technical Artist — Playable Ads</p>
+    <nav class="links">
+      <a href="mailto:dasha96schipanova@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/omnomnom08" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://www.artstation.com/omnomnom08" target="_blank" rel="noopener">ArtStation</a>
+      <a href="https://github.com/omnomnom08" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <p class="intro">
+    Technical artist with 5+ years in mobile games. I produce and implement the visual side of
+    <strong>playable ads</strong> — scene assembly, animation, VFX and optimisation
+    <strong>under the 5&nbsp;MB build limit</strong> — and I build the tooling that makes them at volume.
+    Everything below runs in the browser. Tap a card to play it.
+  </p>
+
+  <h2>Playables <small id="count"></small></h2>
+  <div class="grid" id="grid"></div>
+
+  <h2>Built from scratch <small>art, code and build pipeline — solo</small></h2>
+  <div class="feature">
+    <h3>Temple Escape — a fully custom playable</h3>
+    <p>
+      No game engine. A match-3 rescue playable written from an empty folder on
+      <strong>Pixi.js 8, Three.js and GSAP</strong> over a Vite/Node toolchain —
+      <strong>20 modules, ~8,300 lines</strong>, mobile-first and responsive, shipping as a
+      single self-contained <strong>2.93&nbsp;MB</strong> file.
+    </p>
+    <ul class="tool">
+      <li><strong>Custom debris physics</strong> — a headless simulation with its own unit tests,
+          separated from the Pixi renderer that draws it.</li>
+      <li><strong>Hand-written VFX</strong> — rope, confetti, dust, sparkle and shine, each its own module.</li>
+      <li><strong>Three.js character rig</strong> composited into the 2D Pixi scene.</li>
+      <li><strong>Own art pipeline tool</strong> — a sharp-based optimiser that gets the whole
+          creative under the size budget.</li>
+      <li>Traced and documented a silent failure in the playable SDK, where missing build-time
+          defines made every CTA fall through to <code>window.open("")</code>.</li>
+    </ul>
+    <div class="btnrow" style="margin-top:16px">
+      <a class="btn solid" href="play/temple-escape.html" target="_blank" rel="noopener">Play it</a>
+      <a class="btn out" href="https://github.com/omnomnom08/temple-escape" target="_blank" rel="noopener">Read the source</a>
+    </div>
+  </div>
+
+  <h2>Tools &amp; pipeline</h2>
+  <ul class="tool">
+    <li><strong>Electron production tool</strong> built around the studio playable template —
+        generates <strong>particle emitters</strong> and strips repetitive setup out of production.</li>
+    <li><strong>Blender Geometry Nodes</strong> systems for procedural scattering and instancing,
+        plus AI-assisted scripts for asset renaming and vertex-index restructuring.</li>
+    <li><strong>Custom shaders</strong> authored for reusable VFX workflows.</li>
+    <li>Asset optimisation to a hard size budget — texture atlasing, mesh reduction,
+        particle and draw-call budgets.</li>
+  </ul>
+
+</main>
+
+<footer class="wrap">
+  <span>Daria Shchipanova — Technical Artist</span>
+  <span><a href="mailto:dasha96schipanova@gmail.com">dasha96schipanova@gmail.com</a></span>
+</footer>
+
+<script>
+/* ---------------------------------------------------------------
+   Add a playable:
+     1. node scripts/debrand.mjs <build.zip> <slug>
+     2. paste the printed row below
+     3. optional: drop a screenshot in assets/ and set poster
+   --------------------------------------------------------------- */
+const PLAYABLES = [
+  { slug: "train-tycoon-3d", title: "3D Tycoon Builder", role: "Scene assembly, 3D animation, VFX, UI, size optimisation", size: "4.74 MB", poster: "" }
+];
+
+var grid = document.getElementById("grid");
+grid.innerHTML = PLAYABLES.map(function (p) {
+  var art = p.poster
+    ? '<img src="' + p.poster + '" alt="' + p.title + '" loading="lazy">'
+    : "<span>" + p.title + "</span>";
+  return '<a class="card" href="play/' + p.slug + '.html" target="_blank" rel="noopener">' +
+           '<div class="thumb">' + art + "</div>" +
+           '<div class="meta">' +
+             "<h3>" + p.title + "</h3>" +
+             "<p>" + p.role + "</p>" +
+             '<div class="tags">' +
+               '<span class="chip">' + p.size + "</span>" +
+               '<span class="chip ghost">Playable</span>' +
+             "</div>" +
+           "</div>" +
+         "</a>";
+}).join("");
+document.getElementById("count").textContent =
+  PLAYABLES.length + (PLAYABLES.length === 1 ? " creative" : " creatives");
+</script>
+</body>
+</html>
