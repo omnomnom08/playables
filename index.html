@@ -1019,8 +1019,17 @@ var PLAYABLES = [
     }
     if (desc) desc.dataset.state = "";
     addEventListener("mousemove", function (e) {
-      /* cursor left of the page -> the painting wins; right -> the ASCII wins */
-      target = 80 - (e.clientX / innerWidth) * 60;
+      var r = fig.getBoundingClientRect(), t;
+      if (e.clientX >= r.left && e.clientX <= r.right &&
+          e.clientY >= r.top  && e.clientY <= r.bottom) {
+        /* over the portrait: measure from its own centre, so the half you are
+           standing on is the half that wins */
+        t = (e.clientX - r.left) / r.width;
+      } else {
+        /* anywhere else on the page: measure across the viewport */
+        t = e.clientX / innerWidth;
+      }
+      target = 80 - t * 60;
       if (!raf) raf = requestAnimationFrame(tick);
     }, { passive: true });
   })();
