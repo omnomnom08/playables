@@ -8,226 +8,165 @@
 <meta property="og:title" content="Daria Shchipanova — Technical Artist">
 <meta property="og:description" content="Playable ads you can actually play. VFX, 3D, shaders and the pipeline behind them.">
 <style>
-/* ═══════════════════════════════════════════════════════════
-   Colours are lifted from my CV: #00a3c3 band, #008b9c accent,
-   #f5d742 chips, #ffde33 bullets — on a near-black ground.
-   ═══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   Light editorial. Paper, ink, one accent.
+   The playables are the only saturated colour on the page.
+   ══════════════════════════════════════════════════════════ */
 :root{
-  --bg:#08090b; --bg2:#0d0f12; --pan:#12151a; --pan2:#171b21;
-  --ln:#1e232b; --ln2:#2b323c;
-  --cy:#00a3c3; --cyh:#3fdcf7; --cyd:#008b9c;
-  --ye:#f5d742; --yeh:#ffde33; --onye:#2d1b1b;
-  --tx:#f2f5f7; --mid:#98a3ac; --dim:#5f6a73;
-  --max:1280px;
+  --pa:#faf9f7;        /* paper            */
+  --pa2:#f2f0ec;       /* recessed paper   */
+  --ink:#14151a;       /* text             */
+  --mid:#6e7178;       /* secondary        */
+  --dim:#9a9da3;       /* tertiary         */
+  --rule:#e2e0dc;      /* hairline         */
+  --rule2:#d3d0ca;
+  --ac:#0a7d92;        /* accent (CV teal, darkened for paper) */
+  --ac-so:#e8f2f4;     /* accent wash      */
+  --max:1240px;
   --e:cubic-bezier(.19,1,.22,1);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--tx);overflow-x:hidden;
-  font:16px/1.6 "Inter","Segoe UI",Roboto,-apple-system,Helvetica,Arial,sans-serif;
+body{margin:0;background:var(--pa);color:var(--ink);overflow-x:hidden;
+  font:16px/1.62 "Inter","Segoe UI",Roboto,-apple-system,Helvetica,Arial,sans-serif;
   -webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-img{max-width:100%;display:block}
+img{display:block;max-width:100%}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 34px}
 @media(max-width:640px){.wrap{padding:0 20px}}
 .mono{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace}
+.ser{font-family:"Iowan Old Style",Georgia,"Times New Roman",serif;font-style:italic}
 
-/* film grain — keeps big flat darks from looking like a template */
-body::after{content:"";position:fixed;inset:0;z-index:999;pointer-events:none;opacity:.03;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* ── nav ─────────────────────────────────────────────── */
+nav{position:sticky;top:0;z-index:100;background:rgba(250,249,247,.9);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+nav .wrap{display:flex;align-items:center;gap:30px;height:66px}
+.brand{font-weight:600;font-size:15px;letter-spacing:-.2px}
+.brand i{font-style:normal;color:var(--mid);font-weight:400}
+nav ul{list-style:none;display:flex;gap:26px;margin:0 0 0 auto;padding:0;
+  font-size:13px;letter-spacing:.4px;font-weight:500}
+nav ul a{color:var(--mid);transition:color .2s}
+nav ul a:hover{color:var(--ac)}
+@media(max-width:780px){nav ul{display:none}}
 
-/* ── nav ───────────────────────────────────────────────── */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;
-  background:linear-gradient(to bottom,rgba(8,9,11,.94),rgba(8,9,11,0));
-  backdrop-filter:blur(8px)}
-nav .wrap{display:flex;align-items:center;gap:30px;height:70px}
-.brand{font-weight:650;font-size:15px;letter-spacing:-.2px}
-.brand i{font-style:normal;color:var(--cyh)}
-nav ul{list-style:none;display:flex;gap:28px;margin:0 0 0 auto;padding:0;
-  font-size:13px;letter-spacing:.6px;text-transform:uppercase;font-weight:600}
-nav ul a{color:var(--mid);transition:color .25s}
-nav ul a:hover{color:var(--cyh)}
-@media(max-width:820px){nav ul{display:none}}
-
-/* ── hero ──────────────────────────────────────────────── */
-.hero{position:relative;padding:150px 0 90px;overflow:hidden}
-.hero .glow{position:absolute;width:1000px;height:1000px;right:-320px;top:-380px;
-  background:radial-gradient(circle,rgba(0,163,195,.17),transparent 60%);pointer-events:none}
-.hero .glow2{position:absolute;width:640px;height:640px;left:-280px;bottom:-260px;
-  background:radial-gradient(circle,rgba(245,215,66,.06),transparent 62%);pointer-events:none}
-.hgrid{position:relative;display:grid;gap:56px;grid-template-columns:1fr;align-items:center}
-@media(min-width:1000px){.hgrid{grid-template-columns:1.12fr .88fr;gap:64px}}
-
-.tagline{display:flex;align-items:center;gap:11px;font-size:12px;font-weight:700;
-  letter-spacing:2px;text-transform:uppercase;color:var(--ye)}
-.tagline s{width:34px;height:1px;background:var(--ye);opacity:.6;text-decoration:none}
-h1{margin:26px 0 0;font-size:clamp(44px,8.2vw,104px);line-height:.92;font-weight:800;
-  letter-spacing:-.045em}
+/* ── hero ────────────────────────────────────────────── */
+.hero{padding:84px 0 60px;border-bottom:1px solid var(--rule)}
+.kick{display:flex;align-items:center;gap:12px;font-size:11.5px;font-weight:600;
+  letter-spacing:1.7px;text-transform:uppercase;color:var(--ac)}
+.kick s{width:30px;height:1px;background:var(--ac);opacity:.45;text-decoration:none}
+h1{margin:26px 0 0;font-size:clamp(42px,8vw,96px);line-height:.94;font-weight:680;
+  letter-spacing:-.045em;max-width:15ch}
 h1 .ln{display:block;overflow:hidden}
-h1 .ln span{display:inline-block}
-h1 em{font-style:normal;color:var(--cyh)}
-h1 u{text-decoration:none;-webkit-text-stroke:1.5px var(--ye);color:transparent}
-.lede{margin:30px 0 0;max-width:50ch;font-size:clamp(15.5px,1.7vw,18px);color:var(--mid)}
-.lede b{color:var(--tx);font-weight:600}
-.meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:36px;padding-top:26px;
-  border-top:1px solid var(--ln)}
-.meta div{min-width:104px}
-.meta .n{font-size:24px;font-weight:750;letter-spacing:-.9px;line-height:1}
-.meta .n.y{color:var(--ye)}
-.meta .l{margin-top:6px;font-size:11.5px;letter-spacing:.9px;text-transform:uppercase;color:var(--dim)}
+h1 .ln>span{display:inline-block}
+h1 em{font-style:normal;color:var(--ac)}
+.helo{display:grid;gap:44px;grid-template-columns:1fr;margin-top:38px;align-items:end}
+@media(min-width:900px){.helo{grid-template-columns:1.25fr .75fr;gap:60px}}
+.lede{margin:0;font-size:clamp(16px,1.8vw,19px);color:var(--mid);max-width:52ch}
+.lede b{color:var(--ink);font-weight:600}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);
+  border:1px solid var(--rule)}
+.facts div{background:var(--pa);padding:16px 18px}
+.facts .n{font-size:21px;font-weight:650;letter-spacing:-.6px;line-height:1}
+.facts .l{margin-top:6px;font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:var(--dim)}
 
-/* ── device ────────────────────────────────────────────── */
-.dev{position:relative;width:100%;max-width:340px;margin:0 auto;aspect-ratio:9/16;
-  background:#000;border-radius:30px;border:1px solid var(--ln2);overflow:hidden;
-  box-shadow:0 40px 90px rgba(0,0,0,.7),0 0 0 7px #0b0d10,0 0 60px rgba(0,163,195,.09)}
-.dev iframe{width:100%;height:100%;border:0;display:block;background:#000}
-.dev .slot{position:absolute;inset:0;display:grid;place-items:center;align-content:center;
-  gap:14px;padding:26px;text-align:center;
-  background:repeating-linear-gradient(135deg,#0e1216 0 12px,#0b0e12 12px 24px)}
-.dev .slot b{font-size:15px;font-weight:700;color:var(--mid)}
-.dev .slot i{font-style:normal;font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;
+/* ── section heads ───────────────────────────────────── */
+section{padding:88px 0 0}
+.shd{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;
+  padding-bottom:16px;border-bottom:1px solid var(--ink);margin-bottom:44px}
+.shd .n{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--ac);
+  font-weight:600;letter-spacing:1px}
+.shd h2{margin:0;font-size:clamp(26px,4vw,42px);font-weight:660;letter-spacing:-.04em}
+.shd p{margin:0 0 0 auto;color:var(--dim);font-size:13.5px;max-width:40ch;text-align:right}
+@media(max-width:760px){.shd p{margin-left:0;text-align:left}}
+
+/* ── playable grid: every build live ─────────────────── */
+.pg{display:grid;gap:34px 26px;grid-template-columns:repeat(auto-fill,minmax(244px,1fr))}
+.pcard{display:flex;flex-direction:column}
+.frame{position:relative;aspect-ratio:9/16;border-radius:20px;overflow:hidden;
+  background:#111;border:1px solid var(--rule2);
+  box-shadow:0 2px 4px rgba(20,21,26,.05),0 14px 34px rgba(20,21,26,.10);
+  transition:transform .5s var(--e),box-shadow .5s var(--e)}
+.pcard:hover .frame{transform:translateY(-6px);
+  box-shadow:0 4px 8px rgba(20,21,26,.07),0 24px 52px rgba(20,21,26,.17)}
+.frame iframe{width:100%;height:100%;border:0;display:block;background:#111}
+.frame .idle{position:absolute;inset:0;display:grid;place-items:center;align-content:center;
+  gap:11px;background:var(--pa2);
+  background-image:repeating-linear-gradient(135deg,rgba(20,21,26,.03) 0 10px,transparent 10px 20px)}
+.frame .idle b{font-size:13px;font-weight:600;color:var(--mid)}
+.frame .idle i{font-style:normal;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
   color:var(--dim)}
-.dev .tap{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:16px;
-  cursor:pointer;background:linear-gradient(160deg,#10323b,#0a1418 55%,#141017);
-  transition:opacity .45s var(--e)}
-.dev .tap .ring{width:74px;height:74px;border-radius:99px;background:var(--cy);
-  display:grid;place-items:center;box-shadow:0 0 0 0 rgba(0,163,195,.5);
-  animation:pulse 2.4s infinite}
-@keyframes pulse{70%{box-shadow:0 0 0 26px rgba(0,163,195,0)}100%{box-shadow:0 0 0 0 rgba(0,163,195,0)}}
-.dev .tap svg{width:26px;height:26px;fill:#04191d;margin-left:4px}
-.dev .tap b{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--tx);font-weight:700}
-.dev .tap s{text-decoration:none;font-size:11.5px;color:var(--mid)}
-.dev .spin{position:absolute;inset:0;display:grid;place-items:center}
-.dev .spin i{width:26px;height:26px;border:2.5px solid var(--ln2);border-top-color:var(--cyh);
-  border-radius:99px;animation:sp .8s linear infinite;display:block}
+.frame .boot{position:absolute;inset:0;display:grid;place-items:center;background:#111}
+.frame .boot i{width:22px;height:22px;border:2px solid rgba(255,255,255,.14);
+  border-top-color:var(--ac);border-radius:99px;animation:sp .8s linear infinite;display:block}
 @keyframes sp{to{transform:rotate(360deg)}}
-.devcap{margin:16px auto 0;max-width:340px;display:flex;justify-content:space-between;
-  gap:12px;font-size:11.5px;letter-spacing:.7px;text-transform:uppercase;color:var(--dim)}
-.devcap b{color:var(--ye);font-family:ui-monospace,Consolas,monospace;letter-spacing:0}
+.frame .num{position:absolute;top:11px;left:11px;z-index:3;font-family:ui-monospace,Consolas,monospace;
+  font-size:10.5px;font-weight:700;color:#fff;background:rgba(10,12,14,.62);
+  backdrop-filter:blur(4px);padding:3px 7px;border-radius:4px;letter-spacing:.5px}
 
-/* ── marquee ───────────────────────────────────────────── */
-.marq{border-block:1px solid var(--ln);padding:22px 0;overflow:hidden;margin-top:40px;
-  background:var(--bg2)}
-.marq .row{display:flex;gap:36px;width:max-content;animation:slide 34s linear infinite}
-.marq span{font-size:clamp(24px,4vw,44px);font-weight:800;letter-spacing:-.035em;
-  -webkit-text-stroke:1px var(--ln2);color:transparent;white-space:nowrap}
-.marq span.on{-webkit-text-stroke:0;color:var(--cy)}
-.marq i{font-style:normal;font-size:clamp(24px,4vw,44px);color:var(--ye);opacity:.5}
-@keyframes slide{to{transform:translateX(-50%)}}
+.pinfo{padding-top:15px}
+.pinfo h3{margin:0;font-size:16.5px;font-weight:640;letter-spacing:-.02em;line-height:1.3}
+.pinfo .sub{display:flex;align-items:baseline;gap:9px;margin-top:7px;flex-wrap:wrap}
+.pinfo .tg{font-size:11px;color:var(--mid)}
+.pinfo .sz{font-family:ui-monospace,Consolas,monospace;font-size:11px;color:var(--ac);
+  margin-left:auto;white-space:nowrap}
+.pinfo .did{margin:11px 0 0;padding-top:11px;border-top:1px solid var(--rule);
+  font-size:12.5px;color:var(--mid);line-height:1.55}
+.pinfo .did b{color:var(--ink);font-weight:600;display:block;font-size:10.5px;
+  letter-spacing:1.3px;text-transform:uppercase;margin-bottom:5px}
+.pinfo .acts{display:flex;gap:14px;margin-top:11px;flex-wrap:wrap}
+.lnk{font-size:12.5px;font-weight:600;color:var(--ac);border-bottom:1px solid rgba(10,125,146,.3);
+  padding-bottom:1px;transition:border-color .2s}
+.lnk:hover{border-color:var(--ac)}
+.note{margin:30px 0 0;font-size:13px;color:var(--dim);max-width:62ch}
 
-/* ── sections ──────────────────────────────────────────── */
-section{padding:110px 0 0}
-.shd{display:grid;gap:14px;margin-bottom:48px;
-  grid-template-columns:auto 1fr;align-items:start}
-.shd .num{font-family:ui-monospace,Consolas,monospace;font-size:clamp(40px,6vw,74px);
-  font-weight:700;line-height:.8;color:transparent;-webkit-text-stroke:1.2px var(--ln2)}
-.shd h2{margin:0;font-size:clamp(28px,4.6vw,50px);font-weight:800;letter-spacing:-.04em;line-height:1}
-.shd p{margin:14px 0 0;color:var(--dim);font-size:14.5px;max-width:46ch}
+/* ── process ─────────────────────────────────────────── */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:0}
+.st{padding:26px 24px;border:1px solid var(--rule);margin:-.5px}
+.st .k{font-family:ui-monospace,Consolas,monospace;font-size:11px;color:var(--ac);letter-spacing:1px}
+.st h4{margin:13px 0 9px;font-size:16.5px;font-weight:640;letter-spacing:-.02em}
+.st p{margin:0;font-size:14px;color:var(--mid);line-height:1.62}
+.st p b{color:var(--ink);font-weight:600}
 
-/* ── work: sticky stage + list ─────────────────────────── */
-.work{display:grid;gap:44px;grid-template-columns:1fr;align-items:start}
-@media(min-width:1000px){.work{grid-template-columns:390px 1fr;gap:60px}}
-.stage{position:sticky;top:96px}
-@media(max-width:999px){.stage{position:sticky;top:76px;z-index:20;
-  background:linear-gradient(to bottom,var(--bg) 78%,transparent);padding-bottom:20px}
-  .stage .dev{max-width:250px}}
-.plist{display:flex;flex-direction:column;border-top:1px solid var(--ln)}
-.pi{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;
-  padding:20px 4px;border-bottom:1px solid var(--ln);text-align:left;width:100%;
-  transition:padding .35s var(--e),background .3s}
-.pi:hover{background:rgba(255,255,255,.018);padding-left:14px}
-.pi.on{padding-left:14px;background:linear-gradient(90deg,rgba(0,163,195,.09),transparent 70%)}
-.pi .k{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--dim);
-  transition:color .3s}
-.pi.on .k,.pi:hover .k{color:var(--cyh)}
-.pi h3{margin:0;font-size:clamp(18px,2.4vw,25px);font-weight:730;letter-spacing:-.03em;
-  transition:color .3s}
-.pi.on h3{color:var(--cyh)}
-.pi .tg{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
-.pi .tg s{text-decoration:none;font-size:10.5px;font-weight:700;letter-spacing:.8px;
-  text-transform:uppercase;color:var(--dim);border:1px solid var(--ln2);
-  padding:2.5px 8px;border-radius:4px;transition:.3s}
-.pi.on .tg s{color:var(--cy);border-color:rgba(0,163,195,.4)}
-.pi .sz{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--ye);
-  white-space:nowrap;opacity:.75}
-.pi.ph h3{color:var(--dim)}
-.pi.ph .sz{color:var(--dim)}
-
-.pmeta{margin-top:26px;padding-top:22px;border-top:1px solid var(--ln)}
-.pmeta .lab{font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;
-  color:var(--ye);font-weight:750}
-.pmeta p{margin:12px 0 0;font-size:14.5px;color:var(--mid);line-height:1.66}
-.pmeta ul{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:7px}
-.pmeta li{font-size:12px;color:var(--tx);background:var(--pan2);border:1px solid var(--ln);
-  padding:5px 11px;border-radius:5px}
-.pmeta .acts{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
-.lnk{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:650;
-  color:var(--cyh);border-bottom:1px solid rgba(63,220,247,.35);padding-bottom:2px;
-  transition:.25s}
-.lnk:hover{border-color:var(--cyh);gap:11px}
-
-/* ── UI gallery ────────────────────────────────────────── */
-.uig{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
-.uic{position:relative;border:1px solid var(--ln);border-radius:12px;overflow:hidden;
-  background:var(--pan);transition:transform .45s var(--e),border-color .35s}
-.uic:hover{transform:translateY(-7px) rotate(-.5deg);border-color:var(--cy)}
-.uic img{aspect-ratio:1;object-fit:cover;width:100%}
-.uic figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 14px 13px;
-  font-size:12px;letter-spacing:1.1px;text-transform:uppercase;font-weight:700;color:var(--tx);
-  background:linear-gradient(to top,rgba(5,6,8,.94),transparent)}
-
-/* ── process ───────────────────────────────────────────── */
-.flow{display:grid;gap:0;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-.st{padding:30px 26px;border:1px solid var(--ln);margin:-.5px;transition:background .3s}
-.st:hover{background:var(--pan)}
-.st .k{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--ye);letter-spacing:1px}
-.st h4{margin:14px 0 10px;font-size:17px;font-weight:730;letter-spacing:-.02em}
-.st p{margin:0;font-size:14.5px;color:var(--mid);line-height:1.65}
-.st p b{color:var(--cyh);font-weight:650}
-
-/* ── about ─────────────────────────────────────────────── */
-.ab{display:grid;gap:48px;grid-template-columns:1fr}
-@media(min-width:900px){.ab{grid-template-columns:300px 1fr;gap:60px}}
-.port{position:relative}
-.port img{border-radius:14px;filter:grayscale(.25) contrast(1.04)}
-.port .fr{position:absolute;inset:-11px -11px 11px 11px;border:1px solid var(--cy);
-  border-radius:14px;pointer-events:none;opacity:.5}
-.port .cap{margin-top:20px;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;
-  color:var(--dim)}
-.ab p{font-size:16.5px;color:var(--mid);margin:0 0 20px;max-width:62ch;line-height:1.78}
-.ab p:first-child{font-size:19px;color:var(--tx)}
-.ab p b{color:var(--tx);font-weight:650}
-.ab .hi{color:var(--cyh);font-weight:600}
-.gm{list-style:none;margin:28px 0 0;padding:22px 0 0;border-top:1px solid var(--ln);max-width:62ch}
-.gm .h{font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--ye);
-  font-weight:750;margin-bottom:14px}
-.gm li{display:flex;justify-content:space-between;gap:16px;padding:9px 0;
-  border-bottom:1px dashed var(--ln);font-size:14px}
+/* ── about ───────────────────────────────────────────── */
+.ab{display:grid;gap:46px;grid-template-columns:1fr}
+@media(min-width:900px){.ab{grid-template-columns:274px 1fr;gap:58px}}
+.port figure{margin:0}
+.port .ph{width:100%;aspect-ratio:1;overflow:hidden;border:1px solid var(--rule2);border-radius:4px}
+.port .ph img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.06);
+  transition:filter .6s var(--e)}
+.port:hover .ph img{filter:grayscale(0) contrast(1)}
+.port figcaption{margin-top:13px;font-size:12px;color:var(--dim);line-height:1.5}
+.ab p{font-size:16.5px;color:var(--mid);margin:0 0 19px;max-width:60ch;line-height:1.76}
+.ab p:first-child{font-size:20px;color:var(--ink);line-height:1.6}
+.ab p b{color:var(--ink);font-weight:600}
+.ab .hi{color:var(--ac);font-weight:600}
+.gm{list-style:none;margin:30px 0 0;padding:22px 0 0;border-top:1px solid var(--rule);max-width:60ch}
+.gm .h{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim);
+  font-weight:600;margin-bottom:13px}
+.gm li{display:flex;justify-content:space-between;gap:16px;padding:8px 0;
+  border-bottom:1px solid var(--rule);font-size:14px}
 .gm li:last-child{border:0}
-.gm b{font-weight:500;color:var(--tx)}
-.gm span{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--ye);
-  white-space:nowrap;opacity:.85}
+.gm b{font-weight:500;color:var(--ink)}
+.gm span{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--mid);white-space:nowrap}
 
-/* ── contact ───────────────────────────────────────────── */
-.ct{padding:120px 0 40px}
-.ct h2{margin:0;font-size:clamp(34px,7vw,86px);font-weight:800;letter-spacing:-.05em;line-height:.95}
-.ct h2 em{font-style:normal;color:var(--cyh)}
-.ct .sub{margin:26px 0 0;color:var(--mid);max-width:44ch;font-size:17px}
-.ct .ls{display:flex;flex-wrap:wrap;gap:12px 30px;margin-top:40px;padding-top:26px;
-  border-top:1px solid var(--ln)}
-.ct .ls a{font-size:15px;font-weight:600;color:var(--mid);transition:.25s;
-  display:inline-flex;align-items:center;gap:8px}
-.ct .ls a:hover{color:var(--cyh)}
-.ct .ls a::before{content:"↗";font-size:12px;color:var(--ye);opacity:.7}
-footer{padding:40px 0 54px;color:var(--dim);font-size:13px;display:flex;
+/* ── contact ─────────────────────────────────────────── */
+.ct{padding:110px 0 30px}
+.ct h2{margin:0;font-size:clamp(32px,6.6vw,78px);font-weight:660;letter-spacing:-.05em;line-height:.98}
+.ct h2 em{font-style:normal;color:var(--ac)}
+.ct .sub{margin:24px 0 0;color:var(--mid);max-width:44ch;font-size:17px}
+.ct .ls{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:38px;padding-top:24px;
+  border-top:1px solid var(--ink)}
+.ct .ls a{font-size:15px;font-weight:550;color:var(--mid);transition:color .2s}
+.ct .ls a:hover{color:var(--ac)}
+footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
   flex-wrap:wrap;gap:12px;justify-content:space-between}
 
+.fx{opacity:0;transform:translateY(20px)}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .marq .row{animation:none}
-  .dev .tap .ring{animation:none}
-  *{transition-duration:.01ms!important}
+  .fx{opacity:1!important;transform:none!important}
+  *{transition-duration:.01ms!important;animation:none!important}
 }
 </style>
 </head>
@@ -235,10 +174,9 @@ footer{padding:40px 0 54px;color:var(--dim);font-size:13px;display:flex;
 
 <nav>
   <div class="wrap">
-    <a class="brand" href="#top">Daria <i>Shchipanova</i></a>
+    <a class="brand" href="#top">Daria Shchipanova <i>— Technical Artist</i></a>
     <ul>
       <li><a href="#work">Work</a></li>
-      <li><a href="#ui">UI</a></li>
       <li><a href="#process">Process</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -247,91 +185,53 @@ footer{padding:40px 0 54px;color:var(--dim);font-size:13px;display:flex;
 </nav>
 
 <header class="hero" id="top">
-  <span class="glow"></span><span class="glow2"></span>
-  <div class="wrap hgrid">
-    <div>
-      <div class="tagline js-fade"><s></s>Technical Artist — Playable Ads</div>
-      <h1>
-        <span class="ln"><span>I make ads</span></span>
-        <span class="ln"><span>you can <em>play</em>.</span></span>
-        <span class="ln"><span>Under <u>5 MB</u>.</span></span>
-      </h1>
-      <p class="lede js-fade">
+  <div class="wrap">
+    <div class="kick fx"><s></s>Technical Artist — Playable Ads</div>
+    <h1>
+      <span class="ln"><span>I make ads</span></span>
+      <span class="ln"><span>you can <em>play</em>.</span></span>
+    </h1>
+    <div class="helo">
+      <p class="lede fx">
         Five years in mobile games, most of it where art meets engineering. I build the
         creative <b>and</b> the pipeline that produces it — scene assembly, animation, VFX,
         shaders, and the tools that take the repetitive half out of the job.
+        <span class="ser">Everything below is running live on this page.</span>
       </p>
-      <div class="meta js-fade">
+      <div class="facts fx">
         <div><div class="n">12–13</div><div class="l">Playables / month</div></div>
-        <div><div class="n y" data-to="5" data-suf=" MB">5 MB</div><div class="l">Build ceiling</div></div>
+        <div><div class="n">5 MB</div><div class="l">Build ceiling</div></div>
         <div><div class="n">2D → 3D</div><div class="l">Puzzle to shooter</div></div>
         <div><div class="n">30+</div><div class="l">Shipped titles</div></div>
-      </div>
-    </div>
-
-    <div class="js-fade">
-      <div class="dev" id="hdev"></div>
-      <div class="devcap">
-        <span>Temple Escape — built solo</span><b>2.93 MB</b>
       </div>
     </div>
   </div>
 </header>
 
-<div class="marq">
-  <div class="row" id="marq"></div>
-</div>
-
 <main>
 
 <section id="work">
   <div class="wrap">
-    <div class="shd js-fade">
-      <span class="num">01</span>
-      <div>
-        <h2>Playables</h2>
-        <p>Real builds, running here in the page. Pick one from the list — it loads into the
-           phone and stays with you as you scroll.</p>
-      </div>
+    <div class="shd fx">
+      <span class="n">01</span>
+      <h2>Playables</h2>
+      <p>Real builds, not captures. Each one starts as you reach it.</p>
     </div>
-
-    <div class="work">
-      <div class="stage">
-        <div class="dev" id="sdev"></div>
-        <div class="devcap"><span id="scap">Select a playable</span><b id="ssz"></b></div>
-      </div>
-      <div>
-        <div class="plist" id="plist"></div>
-        <div class="pmeta" id="pmeta"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="ui">
-  <div class="wrap">
-    <div class="shd js-fade">
-      <span class="num">02</span>
-      <div>
-        <h2>UI &amp; assets</h2>
-        <p>Game UI with the asset sheets behind it — every element drawn, sliced and named
-           for the build.</p>
-      </div>
-    </div>
-    <div class="uig" id="uig"></div>
+    <div class="pg" id="pg"></div>
+    <p class="note fx">Every creative here is the shipped build, running in the page.
+       Each loads as it scrolls into view so the page stays light —
+       tap one and play it where it sits.</p>
   </div>
 </section>
 
 <section id="process">
   <div class="wrap">
-    <div class="shd js-fade">
-      <span class="num">03</span>
-      <div>
-        <h2>Tools &amp; pipeline</h2>
-        <p>The half of the job that never shows up in the creative.</p>
-      </div>
+    <div class="shd fx">
+      <span class="n">02</span>
+      <h2>Tools &amp; pipeline</h2>
+      <p>The half of the job that never shows up in the creative.</p>
     </div>
-    <div class="flow js-fade">
+    <div class="flow fx">
       <div class="st"><div class="k">01 / TOOLING</div><h4>Electron production tool</h4>
         <p>Built around our playable template. <b>Generates particle emitters</b> and takes
            the repetitive setup out of every build.</p></div>
@@ -350,15 +250,13 @@ footer{padding:40px 0 54px;color:var(--dim);font-size:13px;display:flex;
 
 <section id="about">
   <div class="wrap">
-    <div class="shd js-fade">
-      <span class="num">04</span>
-      <div><h2>About</h2></div>
-    </div>
-    <div class="ab js-fade">
+    <div class="shd fx"><span class="n">03</span><h2>About</h2></div>
+    <div class="ab fx">
       <div class="port">
-        <img src="assets/daria.webp" alt="Daria Shchipanova" width="760" height="760">
-        <span class="fr"></span>
-        <div class="cap">Daria — remote, wherever the wifi holds</div>
+        <figure>
+          <div class="ph"><img src="assets/daria.webp" alt="Daria Shchipanova" width="760" height="760"></div>
+          <figcaption>Daria Shchipanova — technical artist,<br>working remotely.</figcaption>
+        </figure>
       </div>
       <div>
         <p>I'm a technical artist. I sit between the artists and the developers: preparing
@@ -387,10 +285,10 @@ footer{padding:40px 0 54px;color:var(--dim);font-size:13px;display:flex;
 
 <section class="ct" id="contact">
   <div class="wrap">
-    <h2 class="js-fade">Let's make<br>something <em>playable</em>.</h2>
-    <p class="sub js-fade">Open to technical artist roles where the pipeline is part of the
-       job, not a favour I do on the side.</p>
-    <div class="ls js-fade">
+    <h2 class="fx">Let's make<br>something <em>playable</em>.</h2>
+    <p class="sub fx">Open to technical artist roles where the pipeline is part of the job,
+       not a favour I do on the side.</p>
+    <div class="ls fx">
       <a href="mailto:dasha96schipanova@gmail.com">dasha96schipanova@gmail.com</a>
       <a href="https://t.me/omnomnom08" target="_blank" rel="noopener">Telegram</a>
       <a href="https://www.linkedin.com/in/omnomnom08" target="_blank" rel="noopener">LinkedIn</a>
@@ -408,199 +306,103 @@ footer{padding:40px 0 54px;color:var(--dim);font-size:13px;display:flex;
 </footer>
 
 <script>
-/* ═══════════════════════════════════════════════════════════════
-   PLAYABLES — 10 slots. Two are real; eight are placeholders so
-   the layout can be judged before the builds are chosen.
-
-   To fill a slot:
+/* ══════════════════════════════════════════════════════════════
+   PLAYABLES — 10 slots. Two real, eight placeholders.
+   Fill a slot:
      1. node scripts/debrand.mjs "<build.zip>" <slug>
-     2. set slug, drop `ph:true`, write title/tags/desc/did/size
-   ═══════════════════════════════════════════════════════════════ */
+     2. set slug, delete `ph:true`, fill title/tags/size/did
+   ══════════════════════════════════════════════════════════════ */
 var PLAYABLES = [
   { slug:"temple-escape", title:"Temple Escape", size:"2.93 MB",
-    tags:["Match-3","2D + 3D","Solo build"],
-    desc:"A match-3 rescue playable written from an empty folder on Pixi.js 8, Three.js and GSAP — 20 modules, ~8,300 lines, shipping as one self-contained file. The only piece here where the source is public too.",
-    did:["Concept","All art","All code","Custom debris physics","Hand-written VFX","Three.js character rig","Art pipeline tool","Build setup"],
+    tags:"Match-3 · 2D + 3D · built solo",
+    did:"Concept, all art, all code, custom debris physics, hand-written VFX, Three.js character rig, art pipeline tool",
     source:"https://github.com/omnomnom08/temple-escape" },
 
   { slug:"train-tycoon-3d", title:"3D Tycoon Builder", size:"4.74 MB",
-    tags:["Tycoon","3D","Idle"],
-    desc:"Full 3D build-and-upgrade creative with a physics layer, held inside the ad-network size budget.",
-    did:["Scene assembly","3D animation","VFX","UI","Size optimisation"] },
+    tags:"Tycoon · 3D · idle",
+    did:"Scene assembly, 3D animation, VFX, UI, size optimisation" },
 
-  { ph:true, title:"Slot 03", size:"— MB", tags:["Merge","2D"],
-    desc:"Placeholder. Swap in a merge creative.", did:["Scene assembly","VFX","UI"] },
-  { ph:true, title:"Slot 04", size:"— MB", tags:["Match-3","2D"],
-    desc:"Placeholder. Swap in a match-3 creative.", did:["Scene assembly","Animation"] },
-  { ph:true, title:"Slot 05", size:"— MB", tags:["Shooter","3D"],
-    desc:"Placeholder. Swap in the 3D shooter.", did:["3D animation","VFX","Optimisation"] },
-  { ph:true, title:"Slot 06", size:"— MB", tags:["Puzzle","2D"],
-    desc:"Placeholder. Swap in a puzzle creative.", did:["UI","Animation"] },
-  { ph:true, title:"Slot 07", size:"— MB", tags:["Idle","3D"],
-    desc:"Placeholder.", did:["Scene assembly","VFX"] },
-  { ph:true, title:"Slot 08", size:"— MB", tags:["Runner","3D"],
-    desc:"Placeholder.", did:["3D animation","Optimisation"] },
-  { ph:true, title:"Slot 09", size:"— MB", tags:["Solitaire","2D"],
-    desc:"Placeholder.", did:["UI","Animation"] },
-  { ph:true, title:"Slot 10", size:"— MB", tags:["Physics","3D"],
-    desc:"Placeholder.", did:["VFX","Shaders"] }
-];
-
-var UI_WORK = [
-  { f:"merge_00",     t:"Merge — battle UI" },
-  { f:"merge_01",     t:"Merge — asset sheet" },
-  { f:"merge_02",     t:"Merge — meta screen" },
-  { f:"puzzle_00",    t:"Puzzle — board UI" },
-  { f:"puzzle_01",    t:"Puzzle — asset sheet" },
-  { f:"hidenseek_00", t:"Hide & Seek — HUD" },
-  { f:"hidenseek_01", t:"Hide & Seek — assets" }
+  { ph:1, title:"Slot 03", size:"— MB", tags:"Merge · 2D",       did:"Scene assembly, VFX, UI" },
+  { ph:1, title:"Slot 04", size:"— MB", tags:"Match-3 · 2D",     did:"Scene assembly, animation" },
+  { ph:1, title:"Slot 05", size:"— MB", tags:"Shooter · 3D",     did:"3D animation, VFX, optimisation" },
+  { ph:1, title:"Slot 06", size:"— MB", tags:"Puzzle · 2D",      did:"UI, animation" },
+  { ph:1, title:"Slot 07", size:"— MB", tags:"Idle · 3D",        did:"Scene assembly, VFX" },
+  { ph:1, title:"Slot 08", size:"— MB", tags:"Runner · 3D",      did:"3D animation, optimisation" },
+  { ph:1, title:"Slot 09", size:"— MB", tags:"Solitaire · 2D",   did:"UI, animation" },
+  { ph:1, title:"Slot 10", size:"— MB", tags:"Physics · 3D",     did:"VFX, shaders" }
 ];
 
 (function () {
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) {
     return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]; }); };
-  var PLAY = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
 
-  /* ---- marquee ---- */
-  var words = ["MATCH-3","MERGE","TYCOON","SHOOTER","IDLE","PUZZLE","RUNNER","SOLITAIRE","PHYSICS"];
-  var row = "";
-  for (var r = 0; r < 2; r++)
-    row += words.map(function (w, i) {
-      return '<span class="' + (i % 3 === 1 ? "on" : "") + '">' + w + "</span><i>◆</i>";
-    }).join("");
-  document.getElementById("marq").innerHTML = row;
-
-  /* ---- UI gallery ---- */
-  document.getElementById("uig").innerHTML = UI_WORK.map(function (u) {
-    return '<figure class="uic js-fade"><img src="assets/ui/' + u.f +
-      '.webp" alt="' + esc(u.t) + '" loading="lazy" width="900" height="900">' +
-      "<figcaption>" + esc(u.t) + "</figcaption></figure>";
+  document.getElementById("pg").innerHTML = PLAYABLES.map(function (p, i) {
+    var n = String(i + 1).padStart(2, "0");
+    var screen = p.ph
+      ? '<div class="idle"><b>' + esc(p.title) + "</b><i>Placeholder slot</i></div>"
+      : '<div class="boot"><i></i></div>';
+    return '<article class="pcard fx">' +
+      '<div class="frame" data-slug="' + (p.ph ? "" : esc(p.slug)) + '" data-t="' + esc(p.title) + '">' +
+        '<span class="num">' + n + "</span>" + screen +
+      "</div>" +
+      '<div class="pinfo">' +
+        "<h3>" + esc(p.title) + "</h3>" +
+        '<div class="sub"><span class="tg">' + esc(p.tags) + "</span>" +
+          '<span class="sz">' + esc(p.size) + "</span></div>" +
+        '<div class="did"><b>What I did</b>' + esc(p.did) + "</div>" +
+        (p.ph ? "" : '<div class="acts">' +
+          '<a class="lnk" href="play/' + esc(p.slug) + '.html" target="_blank" rel="noopener">Full screen ↗</a>' +
+          (p.source ? '<a class="lnk" href="' + esc(p.source) + '" target="_blank" rel="noopener">Source ↗</a>' : "") +
+        "</div>") +
+      "</div></article>";
   }).join("");
 
-  /* ---- device helpers: only ever one iframe alive ---- */
-  function tapScreen(label) {
-    return '<div class="tap"><span class="ring">' + PLAY + "</span>" +
-           "<b>Tap to play</b><s>" + esc(label) + "</s></div>";
-  }
-  function slotScreen(title) {
-    return '<div class="slot"><b>' + esc(title) + "</b><i>Placeholder slot</i></div>";
-  }
-  function mount(dev, slug, label) {
-    dev.innerHTML = '<div class="spin"><i></i></div>';
-    var f = document.createElement("iframe");
-    f.title = label; f.setAttribute("allow", "autoplay; fullscreen");
-    f.addEventListener("load", function () {
-      var s = dev.querySelector(".spin"); if (s) s.remove();
+  /* Each build mounts as it scrolls in — all ten end up live, but the
+     page never pays for ten at once on first paint. */
+  var mounted = 0;
+  var lo = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var f = e.target, slug = f.dataset.slug;
+      lo.unobserve(f);
+      if (!slug) return;
+      var ifr = document.createElement("iframe");
+      ifr.title = f.dataset.t;
+      ifr.setAttribute("allow", "autoplay; fullscreen");
+      ifr.addEventListener("load", function () {
+        var b = f.querySelector(".boot"); if (b) b.remove();
+      });
+      /* stagger so several entering together don't all fetch at once */
+      setTimeout(function () { ifr.src = "play/" + slug + ".html"; }, (mounted++ % 4) * 260);
+      f.appendChild(ifr);
     });
-    f.src = "play/" + slug + ".html";
-    dev.appendChild(f);
-  }
+  }, { rootMargin: "500px 0px" });
+  document.querySelectorAll(".frame").forEach(function (f) { lo.observe(f); });
 
-  /* ---- hero device: poster until tapped, then it plays ---- */
-  var hdev = document.getElementById("hdev");
-  hdev.innerHTML = tapScreen("Temple Escape · 2.93 MB");
-  hdev.addEventListener("click", function () {
-    if (!hdev.querySelector(".tap")) return;
-    mount(hdev, "temple-escape", "Temple Escape");
-  });
-
-  /* ---- work list ---- */
-  var sdev = document.getElementById("sdev"),
-      scap = document.getElementById("scap"),
-      ssz  = document.getElementById("ssz"),
-      pmet = document.getElementById("pmeta"),
-      cur  = -1;
-
-  document.getElementById("plist").innerHTML = PLAYABLES.map(function (p, i) {
-    return '<button class="pi' + (p.ph ? " ph" : "") + '" data-i="' + i + '">' +
-      '<span class="k">' + String(i + 1).padStart(2, "0") + "</span>" +
-      "<span><h3>" + esc(p.title) + "</h3>" +
-        '<span class="tg">' + p.tags.map(function (t) {
-          return "<s>" + esc(t) + "</s>"; }).join("") + "</span></span>" +
-      '<span class="sz">' + esc(p.size) + "</span></button>";
-  }).join("");
-
-  function select(i) {
-    if (i === cur) return;
-    cur = i;
-    var p = PLAYABLES[i];
-    [].forEach.call(document.querySelectorAll(".pi"), function (b, j) {
-      b.classList.toggle("on", j === i);
-    });
-    scap.textContent = p.title;
-    ssz.textContent = p.ph ? "" : p.size;
-
-    if (p.ph) sdev.innerHTML = slotScreen(p.title);
-    else {
-      sdev.innerHTML = tapScreen(p.title + " · " + p.size);
-      sdev.onclick = function () {
-        if (sdev.querySelector(".tap")) mount(sdev, p.slug, p.title);
-      };
-    }
-
-    pmet.innerHTML =
-      '<span class="lab">What I did</span>' +
-      "<p>" + esc(p.desc) + "</p>" +
-      "<ul>" + p.did.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>" +
-      (p.ph ? "" : '<div class="acts">' +
-        '<a class="lnk" href="play/' + esc(p.slug) + '.html" target="_blank" rel="noopener">Open full screen →</a>' +
-        (p.source ? '<a class="lnk" href="' + esc(p.source) + '" target="_blank" rel="noopener">Read the source →</a>' : "") +
-      "</div>");
-  }
-
-  document.getElementById("plist").addEventListener("click", function (e) {
-    var b = e.target.closest(".pi"); if (b) select(+b.dataset.i);
-  });
-  select(0);
-
-  /* ---- motion (progressive: content is visible without JS) ---- */
-  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (!reduce) {
-    document.querySelectorAll(".js-fade").forEach(function (el) {
-      el.style.opacity = 0; el.style.transform = "translateY(26px)";
-      el.style.transition = "opacity .8s cubic-bezier(.19,1,.22,1),transform .8s cubic-bezier(.19,1,.22,1)";
-    });
+  /* ---- motion ---- */
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e, n) {
         if (!e.isIntersecting) return;
         io.unobserve(e.target);
-        setTimeout(function () {
-          e.target.style.opacity = 1; e.target.style.transform = "none";
-        }, n * 80);
+        var el = e.target;
+        el.style.transition = "opacity .75s var(--e) " + (n * .07) + "s,transform .75s var(--e) " + (n * .07) + "s";
+        requestAnimationFrame(function () { el.style.opacity = 1; el.style.transform = "none"; });
       });
-    }, { threshold: .08, rootMargin: "0px 0px -50px 0px" });
-    document.querySelectorAll(".js-fade").forEach(function (el) { io.observe(el); });
+    }, { threshold: .06, rootMargin: "0px 0px -40px 0px" });
+    document.querySelectorAll(".fx").forEach(function (el) { io.observe(el); });
 
-    /* headline: each line wipes up */
-    document.querySelectorAll("h1 .ln span").forEach(function (s, i) {
+    document.querySelectorAll("h1 .ln>span").forEach(function (s, i) {
       s.style.transform = "translateY(105%)";
-      s.style.transition = "transform 1s cubic-bezier(.19,1,.22,1) " + (i * .11 + .12) + "s";
+      s.style.transition = "transform .95s cubic-bezier(.19,1,.22,1) " + (i * .1 + .1) + "s";
     });
     requestAnimationFrame(function () {
-      document.querySelectorAll("h1 .ln span").forEach(function (s) { s.style.transform = "none"; });
+      document.querySelectorAll("h1 .ln>span").forEach(function (s) { s.style.transform = "none"; });
     });
-
-    /* hero parallax on the device */
-    var dev = document.getElementById("hdev").parentNode;
-    addEventListener("scroll", function () {
-      var y = Math.min(scrollY, 700);
-      dev.style.transform = "translateY(" + (y * -0.055) + "px)";
-    }, { passive: true });
-
-    /* counters */
-    var so = new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        so.unobserve(e.target);
-        var el = e.target, to = +el.dataset.to, sf = el.dataset.suf || "", t0 = performance.now();
-        (function tick(now) {
-          var k = Math.min(1, (now - t0) / 1000);
-          el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))) + sf;
-          if (k < 1) requestAnimationFrame(tick);
-        })(t0);
-      });
-    }, { threshold: .6 });
-    document.querySelectorAll("[data-to]").forEach(function (el) { so.observe(el); });
+  } else {
+    document.querySelectorAll(".fx").forEach(function (el) {
+      el.style.opacity = 1; el.style.transform = "none";
+    });
   }
 })();
 </script>
