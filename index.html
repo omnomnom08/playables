@@ -270,7 +270,8 @@ section[id],header[id]{scroll-margin-top:84px}
 @keyframes glow{
   0%,100%{box-shadow:0 0 0 4px rgba(245,215,66,.2),0 14px 34px rgba(245,215,66,.24)}
   50%    {box-shadow:0 0 0 8px rgba(245,215,66,.28),0 18px 48px rgba(245,215,66,.42)}}
-.frame iframe{width:100%;height:100%;border:0;display:block;background:#111}
+.frame iframe{position:absolute;inset:0;z-index:2;width:100%;height:100%;border:0;
+  display:block;background:#111}
 .frame .post{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   transition:transform .6s var(--e),filter .4s var(--e)}
 .pcard:hover .frame .post{transform:scale(1.04)}
@@ -297,16 +298,19 @@ section[id],header[id]{scroll-margin-top:84px}
   background-image:repeating-linear-gradient(135deg,rgba(20,21,26,.03) 0 10px,transparent 10px 20px)}
 .idle b{font-size:13px;font-weight:600;color:var(--mid)}
 .idle i{font-style:normal;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim)}
-.boot{position:absolute;inset:0;display:grid;place-items:center;background:#111}
+.boot{position:absolute;inset:0;z-index:3;display:grid;place-items:center;background:#111}
 .boot i{width:22px;height:22px;border:2px solid rgba(255,255,255,.14);border-top-color:var(--ac2);
   border-radius:50%;animation:sp .8s linear infinite;display:block}
 @keyframes sp{to{transform:rotate(360deg)}}
-.num{position:absolute;top:11px;left:11px;z-index:3;font-family:ui-monospace,Consolas,monospace;
+.num{position:absolute;top:11px;left:11px;z-index:4;transition:opacity .3s;font-family:ui-monospace,Consolas,monospace;
   font-size:10.5px;font-weight:700;color:#fff;background:rgba(10,12,14,.6);
   backdrop-filter:blur(4px);padding:3px 7px;border-radius:4px;letter-spacing:.5px}
-.tagm{position:absolute;top:11px;right:11px;z-index:3;font-size:9.5px;font-weight:750;
+.tagm{position:absolute;top:11px;right:11px;z-index:4;transition:opacity .3s;
+  font-size:9.5px;font-weight:750;
   letter-spacing:1px;text-transform:uppercase;color:#2d2410;background:var(--ye);
   padding:3px 8px;border-radius:4px}
+/* once a build is running, the badges get out of its way */
+.frame.live .num,.frame.live .tagm{opacity:0;pointer-events:none}
 
 .pinfo{padding-top:15px}
 .pinfo h3{margin:0;font-size:16.5px;font-weight:640;letter-spacing:-.02em;line-height:1.3}
@@ -820,7 +824,9 @@ var PLAYABLES = [
     ifr.setAttribute("allow", "autoplay; fullscreen");
     ifr.addEventListener("load", function () {
       var b = f.querySelector(".boot"); if (b) b.remove();
+      var p = f.querySelector(".post"); if (p) p.remove();
     });
+    f.classList.add("live");
     ifr.src = "play/" + slug + ".html";
     f.appendChild(ifr);
   });
