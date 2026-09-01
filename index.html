@@ -818,6 +818,25 @@ var PLAYABLES = [
       "</div></article>";
   }).join("");
 
+  /* ---------- some builds ship with Howler's master mute on ----------
+     Bowmasters loads all 27 of its sounds and then mutes globally, so it
+     plays silently while every other card has audio. Same origin, so we can
+     reach in and switch it back once the engine exists. Stops shortly after
+     it settles, to avoid fighting the creative's own mute button. */
+  function unmute(ifr) {
+    var t0 = Date.now(), done = 0;
+    (function poll() {
+      var now = Date.now();
+      if (now - t0 > 10000) return;          /* engine never showed up */
+      if (done && now - done > 1500) return; /* unmuted and stayed that way */
+      try {
+        var w = ifr.contentWindow;
+        if (w && w.Howler && w.Howler._muted) { w.Howler.mute(false); done = Date.now(); }
+      } catch (e) { return; }                /* cross-origin — nothing to do */
+      setTimeout(poll, 250);
+    })();
+  }
+
   /* ---------- tear a running build back down to its poster ---------- */
   function stop(f) {
     var slug = f.dataset.slug, p = null;
@@ -854,6 +873,7 @@ var PLAYABLES = [
     ifr.addEventListener("load", function () {
       var b = f.querySelector(".boot"); if (b) b.remove();
       var p = f.querySelector(".post"); if (p) p.remove();
+      unmute(ifr);
     });
     f.classList.add("live");
     ifr.src = "play/" + slug + ".html";
