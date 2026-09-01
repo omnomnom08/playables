@@ -397,10 +397,18 @@ section[id],header[id]{scroll-margin-top:84px}
              radial-gradient(circle at 70% 50%,rgba(10,125,146,.22),transparent 60%)}
 .sh{position:absolute;inset:0;z-index:1}
 .sh img{width:100%;height:100%;object-fit:contain;display:block}
-.sh.a{-webkit-mask-image:linear-gradient(to right,#000 calc(var(--seam) - 9%),transparent calc(var(--seam) + 9%));
-              mask-image:linear-gradient(to right,#000 calc(var(--seam) - 9%),transparent calc(var(--seam) + 9%))}
-.sh.b{-webkit-mask-image:linear-gradient(to right,transparent calc(var(--seam) - 9%),#000 calc(var(--seam) + 9%));
-              mask-image:linear-gradient(to right,transparent calc(var(--seam) - 9%),#000 calc(var(--seam) + 9%))}
+/* two mask layers per half, intersected: the sliding seam, and a fade
+   that softens the flat bottom crop so she dissolves into the paper */
+.sh{-webkit-mask-composite:source-in;mask-composite:intersect;
+    -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.sh.a{-webkit-mask-image:linear-gradient(to right,#000 calc(var(--seam) - 9%),transparent calc(var(--seam) + 9%)),
+                         linear-gradient(to bottom,#000 62%,rgba(0,0,0,.55) 84%,transparent 99%);
+              mask-image:linear-gradient(to right,#000 calc(var(--seam) - 9%),transparent calc(var(--seam) + 9%)),
+                         linear-gradient(to bottom,#000 62%,rgba(0,0,0,.55) 84%,transparent 99%)}
+.sh.b{-webkit-mask-image:linear-gradient(to right,transparent calc(var(--seam) - 9%),#000 calc(var(--seam) + 9%)),
+                         linear-gradient(to bottom,#000 62%,rgba(0,0,0,.55) 84%,transparent 99%);
+              mask-image:linear-gradient(to right,transparent calc(var(--seam) - 9%),#000 calc(var(--seam) + 9%)),
+                         linear-gradient(to bottom,#000 62%,rgba(0,0,0,.55) 84%,transparent 99%)}
 
 /* --seam is driven by cursor X across the whole page (see script).
    Without JS it simply rests at 50% and both halves show. */
