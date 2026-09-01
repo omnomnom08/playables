@@ -265,13 +265,42 @@ section{padding:88px 0 0}
 
 /* ── about ───────────────────────────────────────────── */
 .ab{display:grid;gap:46px;grid-template-columns:1fr}
-@media(min-width:900px){.ab{grid-template-columns:274px 1fr;gap:58px}}
-.port figure{margin:0}
-.port .ph{width:100%;aspect-ratio:1;overflow:hidden;border:1px solid var(--rule2);border-radius:18px}
-.port .ph img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.06);
-  transition:filter .6s var(--e)}
-.port:hover .ph img{filter:grayscale(0) contrast(1)}
-.port figcaption{margin-top:13px;font-size:12px;color:var(--dim);line-height:1.5}
+@media(min-width:900px){.ab{grid-template-columns:340px 1fr;gap:54px;align-items:start}}
+/* interactive discipline rotator — replaces the old portrait */
+.rota{position:relative;background:#fff;border:1px solid var(--rule);border-radius:20px;
+  padding:26px 24px 22px;cursor:pointer;user-select:none;overflow:hidden;
+  box-shadow:0 2px 0 var(--rule2);transition:transform .35s var(--e),box-shadow .35s var(--e)}
+.rota:hover,.rota:focus-visible{transform:translateY(-4px);outline:none;
+  box-shadow:0 14px 30px rgba(20,21,26,.10)}
+.rota::before{content:"";position:absolute;z-index:0;width:200px;height:200px;
+  right:-70px;top:-70px;border-radius:50%;background:var(--ye);opacity:.16;
+  transition:transform .7s var(--e)}
+.rota:hover::before{transform:scale(1.25)}
+.rota>*{position:relative;z-index:1}
+.rlab{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim);
+  font-weight:650}
+.rstage{position:relative;height:5.2rem;margin-top:6px}
+.rword{position:absolute;left:0;top:0;font-size:clamp(40px,5.6vw,62px);font-weight:780;
+  letter-spacing:-.045em;line-height:1.15;white-space:nowrap;
+  opacity:0;transform:translateY(65%) rotate(3deg);
+  transition:opacity .42s var(--e),transform .42s var(--e)}
+.rword.in{opacity:1;transform:none}
+.rword.out{opacity:0;transform:translateY(-65%) rotate(-3deg)}
+.rword.c0{color:var(--ac)}
+.rword.c1{color:var(--ink)}
+.rword.c2{color:var(--yed)}
+.rword.code{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
+  font-size:clamp(30px,4.2vw,46px);letter-spacing:-.02em}
+.rcap{margin:4px 0 0;min-height:3.4em;font-size:14.5px;color:var(--mid);line-height:1.6;
+  transition:opacity .3s}
+.rdots{display:flex;gap:7px;margin-top:14px}
+.rdots i{width:7px;height:7px;border-radius:50%;background:var(--rule2);
+  transition:background .3s,width .3s var(--e)}
+.rdots i.on{background:var(--ac);width:20px;border-radius:99px}
+.rhint{position:absolute;right:20px;bottom:16px;z-index:1;
+  font-family:"Caveat","Segoe Script",cursive;font-size:18px;color:var(--dim);
+  transform:rotate(-5deg);opacity:.85}
+@media(max-width:899px){.rstage{height:4.4rem}.rcap{min-height:0}}
 .ab p{font-size:16.5px;color:var(--mid);margin:0 0 19px;max-width:60ch;line-height:1.76}
 .ab p:first-child{font-size:20px;color:var(--ink);line-height:1.6}
 .ab p b{color:var(--ink);font-weight:600}
@@ -419,11 +448,13 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
   <div class="wrap">
     <div class="shd fx"><span class="n">03</span><h2>About</h2></div>
     <div class="ab fx">
-      <div class="port">
-        <figure>
-          <div class="ph"><img src="assets/daria.webp" alt="Daria Shchipanova" width="760" height="760"></div>
-          <figcaption>Daria Shchipanova — technical artist,<br>working remotely.</figcaption>
-        </figure>
+      <div class="rota" id="rota" role="button" tabindex="0"
+           aria-label="Cycle through the disciplines I work in">
+        <span class="rlab">I do</span>
+        <div class="rstage" id="rstage"></div>
+        <p class="rcap" id="rcap"></p>
+        <div class="rdots" id="rdots"></div>
+        <span class="rhint">click to spin</span>
       </div>
       <div>
         <p>I'm a technical artist. I sit between the artists and the developers: preparing
@@ -575,6 +606,60 @@ var PLAYABLES = [
     ifr.src = "play/" + slug + ".html";
     f.appendChild(ifr);
   });
+
+  /* ---------- discipline rotator ---------- */
+  (function () {
+    var rota = document.getElementById("rota");
+    if (!rota) return;
+    var DISC = [
+      { w:"UI",     c:"Layouts, HUDs and buttons that still read on a four-inch screen." },
+      { w:"2D",     c:"Sprites, atlases and frame-by-frame animation, packed to fit." },
+      { w:"3D",     c:"Modelling, rigging and animation — Blender, end to end." },
+      { w:"VFX",    c:"Particles, trails, dissolves. Emitters by the hundred." },
+      { w:"SFX",    c:"Cut, mixed and wired to the beat of the gameplay." },
+      { w:"<code>", c:"JavaScript, Electron, Blender scripting, Git.", code:1 }
+    ];
+    var stage = document.getElementById("rstage"),
+        cap = document.getElementById("rcap"),
+        dots = document.getElementById("rdots"),
+        i = -1, timer = null, cur = null;
+
+    dots.innerHTML = DISC.map(function () { return "<i></i>"; }).join("");
+    var pips = dots.querySelectorAll("i");
+
+    function go(n) {
+      if (n === i) return;
+      i = (n + DISC.length) % DISC.length;
+      var d = DISC[i];
+      if (cur) {
+        var old = cur;
+        old.className = "rword out";
+        setTimeout(function () { if (old.parentNode) old.remove(); }, 460);
+      }
+      var el = document.createElement("span");
+      el.className = "rword c" + (i % 3) + (d.code ? " code" : "");
+      el.textContent = d.w;
+      stage.appendChild(el);
+      requestAnimationFrame(function () { el.classList.add("in"); });
+      cur = el;
+      cap.style.opacity = 0;
+      setTimeout(function () { cap.textContent = d.c; cap.style.opacity = 1; }, 190);
+      [].forEach.call(pips, function (p, k) { p.classList.toggle("on", k === i); });
+    }
+    function play() { clearInterval(timer); timer = setInterval(function () { go(i + 1); }, 2300); }
+    function stop() { clearInterval(timer); }
+
+    go(0);
+    if (!reduce) play();
+    rota.addEventListener("click", function () { go(i + 1); if (!reduce) play(); });
+    rota.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(i + 1); if (!reduce) play(); }
+      if (e.key === "ArrowRight") go(i + 1);
+      if (e.key === "ArrowLeft") go(i - 1);
+    });
+    rota.addEventListener("mouseenter", stop);
+    rota.addEventListener("mouseleave", function () { if (!reduce) play(); });
+  })();
 
   /* ---------- cursor ---------- */
   if (matchMedia("(hover: hover) and (pointer: fine)").matches && !reduce) {
