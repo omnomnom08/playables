@@ -4,257 +4,230 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Daria Shchipanova — Technical Artist, Playable Ads</title>
-<meta name="description" content="Playable ad creatives, VFX, pipeline tooling and technical art by Daria Shchipanova.">
-<meta property="og:title" content="Daria Shchipanova — Technical Artist, Playable Ads">
-<meta property="og:description" content="Playable ads you can play in the browser. VFX, 3D, shaders and the tooling that ships them.">
+<meta name="description" content="Playable ads, VFX, shaders and the tooling that ships them. Technical artist, 5+ years in mobile games.">
+<meta property="og:title" content="Daria Shchipanova — Technical Artist">
+<meta property="og:description" content="Playable ads you can actually play. VFX, 3D, shaders and the pipeline behind them.">
 <style>
-/* ==========================================================
-   Palette taken from the CV: #00a3c3 band · #008b9c accent
-   #f5d742 chips · #ffde33 bullets · on a dark ground
-   ========================================================== */
+/* ═══════════════════════════════════════════════════════════
+   Colours are lifted from my CV: #00a3c3 band, #008b9c accent,
+   #f5d742 chips, #ffde33 bullets — on a near-black ground.
+   ═══════════════════════════════════════════════════════════ */
 :root{
-  --bg:#090b0d;
-  --bg-2:#0e1114;
-  --card:#131719;
-  --card-2:#191e22;
-  --line:#212830;
-  --line-2:#2c343d;
-
-  --cy:#00a3c3;
-  --cy-hi:#35d8f5;
-  --cy-dim:#008b9c;
-  --ye:#f5d742;
-  --ye-hi:#ffde33;
-  --on-ye:#2d1b1b;
-
-  --tx:#eef2f4;
-  --tx-mid:#a3adb5;
-  --tx-dim:#6d777f;
-
-  --max:1180px;
-  --ease:cubic-bezier(.22,.61,.36,1);
+  --bg:#08090b; --bg2:#0d0f12; --pan:#12151a; --pan2:#171b21;
+  --ln:#1e232b; --ln2:#2b323c;
+  --cy:#00a3c3; --cyh:#3fdcf7; --cyd:#008b9c;
+  --ye:#f5d742; --yeh:#ffde33; --onye:#2d1b1b;
+  --tx:#f2f5f7; --mid:#98a3ac; --dim:#5f6a73;
+  --max:1280px;
+  --e:cubic-bezier(.19,1,.22,1);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--tx);
-  font:16px/1.6 "Segoe UI",Roboto,-apple-system,Helvetica,Arial,sans-serif;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden}
-body.lock{overflow:hidden}
-a{color:var(--cy-hi);text-decoration:none}
-img,video{max-width:100%;display:block}
-.wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--tx);overflow-x:hidden;
+  font:16px/1.6 "Inter","Segoe UI",Roboto,-apple-system,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+@media(max-width:640px){.wrap{padding:0 20px}}
 .mono{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace}
 
-/* ---------------- nav ---------------- */
-nav{position:sticky;top:0;z-index:80;background:rgba(9,11,13,.78);
-  backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;align-items:center;gap:28px;height:64px}
-.brand{font-weight:700;letter-spacing:-.2px;color:var(--tx);white-space:nowrap;font-size:16px}
-.brand b{color:var(--cy-hi);font-weight:700}
-nav ul{list-style:none;display:flex;gap:26px;margin:0 0 0 auto;padding:0}
-nav ul a{color:var(--tx-mid);font-size:14.5px;font-weight:500;position:relative;padding:4px 0}
-nav ul a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1.5px;
-  background:var(--cy-hi);transition:width .28s var(--ease)}
-nav ul a:hover{color:var(--tx)}
-nav ul a:hover::after{width:100%}
-.ncta{border:1.5px solid var(--line-2);color:var(--tx);padding:8px 16px;border-radius:7px;
-  font-size:14px;font-weight:600;transition:.2s var(--ease);white-space:nowrap}
-.ncta:hover{border-color:var(--cy);color:var(--cy-hi);background:rgba(0,163,195,.08)}
-@media(max-width:880px){nav ul{display:none}}
+/* film grain — keeps big flat darks from looking like a template */
+body::after{content:"";position:fixed;inset:0;z-index:999;pointer-events:none;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
-/* ---------------- hero ---------------- */
-.hero{position:relative;padding:96px 0 72px;overflow:hidden}
-.hero::before{content:"";position:absolute;width:900px;height:900px;right:-260px;top:-420px;
-  background:radial-gradient(circle,rgba(0,163,195,.20),transparent 62%);pointer-events:none}
-.hero::after{content:"";position:absolute;width:620px;height:620px;left:-240px;top:60px;
-  background:radial-gradient(circle,rgba(245,215,66,.08),transparent 64%);pointer-events:none}
-.hero .wrap{position:relative}
-.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:700;
-  letter-spacing:1.8px;text-transform:uppercase;color:var(--ye);
-  border:1px solid rgba(245,215,66,.28);background:rgba(245,215,66,.06);
-  padding:7px 14px;border-radius:99px}
-.eyebrow i{width:6px;height:6px;border-radius:99px;background:var(--ye);
-  box-shadow:0 0 0 4px rgba(245,215,66,.16)}
-h1{margin:24px 0 0;font-size:clamp(38px,7vw,70px);line-height:1.02;
-  font-weight:800;letter-spacing:-2px;max-width:16ch}
-h1 em{font-style:normal;color:var(--cy-hi)}
-.lede{margin:24px 0 0;max-width:58ch;font-size:clamp(16px,1.9vw,18.5px);color:var(--tx-mid)}
+/* ── nav ───────────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;
+  background:linear-gradient(to bottom,rgba(8,9,11,.94),rgba(8,9,11,0));
+  backdrop-filter:blur(8px)}
+nav .wrap{display:flex;align-items:center;gap:30px;height:70px}
+.brand{font-weight:650;font-size:15px;letter-spacing:-.2px}
+.brand i{font-style:normal;color:var(--cyh)}
+nav ul{list-style:none;display:flex;gap:28px;margin:0 0 0 auto;padding:0;
+  font-size:13px;letter-spacing:.6px;text-transform:uppercase;font-weight:600}
+nav ul a{color:var(--mid);transition:color .25s}
+nav ul a:hover{color:var(--cyh)}
+@media(max-width:820px){nav ul{display:none}}
+
+/* ── hero ──────────────────────────────────────────────── */
+.hero{position:relative;padding:150px 0 90px;overflow:hidden}
+.hero .glow{position:absolute;width:1000px;height:1000px;right:-320px;top:-380px;
+  background:radial-gradient(circle,rgba(0,163,195,.17),transparent 60%);pointer-events:none}
+.hero .glow2{position:absolute;width:640px;height:640px;left:-280px;bottom:-260px;
+  background:radial-gradient(circle,rgba(245,215,66,.06),transparent 62%);pointer-events:none}
+.hgrid{position:relative;display:grid;gap:56px;grid-template-columns:1fr;align-items:center}
+@media(min-width:1000px){.hgrid{grid-template-columns:1.12fr .88fr;gap:64px}}
+
+.tagline{display:flex;align-items:center;gap:11px;font-size:12px;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;color:var(--ye)}
+.tagline s{width:34px;height:1px;background:var(--ye);opacity:.6;text-decoration:none}
+h1{margin:26px 0 0;font-size:clamp(44px,8.2vw,104px);line-height:.92;font-weight:800;
+  letter-spacing:-.045em}
+h1 .ln{display:block;overflow:hidden}
+h1 .ln span{display:inline-block}
+h1 em{font-style:normal;color:var(--cyh)}
+h1 u{text-decoration:none;-webkit-text-stroke:1.5px var(--ye);color:transparent}
+.lede{margin:30px 0 0;max-width:50ch;font-size:clamp(15.5px,1.7vw,18px);color:var(--mid)}
 .lede b{color:var(--tx);font-weight:600}
-.hbtns{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:8px;
-  font-size:15px;font-weight:650;transition:.2s var(--ease);border:1.5px solid transparent;cursor:pointer}
-.btn.solid{background:var(--cy);color:#03171b}
-.btn.solid:hover{background:var(--cy-hi);transform:translateY(-2px);
-  box-shadow:0 10px 26px rgba(0,163,195,.3)}
-.btn.out{border-color:var(--line-2);color:var(--tx);background:transparent}
-.btn.out:hover{border-color:var(--cy);color:var(--cy-hi)}
-.btn.ye{background:var(--ye);color:var(--on-ye)}
-.btn.ye:hover{background:var(--ye-hi);transform:translateY(-2px)}
+.meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:36px;padding-top:26px;
+  border-top:1px solid var(--ln)}
+.meta div{min-width:104px}
+.meta .n{font-size:24px;font-weight:750;letter-spacing:-.9px;line-height:1}
+.meta .n.y{color:var(--ye)}
+.meta .l{margin-top:6px;font-size:11.5px;letter-spacing:.9px;text-transform:uppercase;color:var(--dim)}
 
-.stats{display:grid;gap:1px;margin-top:64px;background:var(--line);
-  border:1px solid var(--line);border-radius:12px;overflow:hidden;
-  grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
-.stat{background:var(--bg-2);padding:22px 24px}
-.stat .n{font-size:clamp(25px,3.4vw,33px);font-weight:800;letter-spacing:-1px;line-height:1.1;
-  color:var(--tx)}
-.stat:nth-child(2) .n{color:var(--ye)}
-.stat .l{margin-top:6px;font-size:13px;color:var(--tx-dim);line-height:1.5}
-
-/* ---------------- section furniture ---------------- */
-section{padding:82px 0 0}
-.shead{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;margin-bottom:34px}
-.shead .idx{font-family:ui-monospace,Consolas,monospace;font-size:13px;font-weight:700;
-  color:var(--ye);letter-spacing:1px;padding-bottom:6px}
-.shead h2{margin:0;font-size:clamp(26px,3.8vw,36px);font-weight:780;letter-spacing:-1.1px}
-.shead .sub{margin:0 0 6px auto;color:var(--tx-dim);font-size:14px;max-width:40ch;text-align:right}
-@media(max-width:720px){.shead .sub{margin-left:0;text-align:left}}
-
-/* ---------------- playable grid ---------------- */
-.grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fill,minmax(236px,1fr))}
-.pc{position:relative;border-radius:14px;overflow:hidden;cursor:pointer;
-  background:var(--card);border:1px solid var(--line);
-  transition:transform .3s var(--ease),border-color .3s var(--ease),box-shadow .3s var(--ease)}
-.pc:hover,.pc:focus-visible{transform:translateY(-6px);border-color:var(--cy);outline:none;
-  box-shadow:0 18px 40px rgba(0,0,0,.55),0 0 0 1px rgba(0,163,195,.35)}
-.pc .art{position:relative;aspect-ratio:9/16;overflow:hidden;
-  background:linear-gradient(155deg,#0f3540 0%,#0b171c 52%,#161016 100%)}
-.pc .art img,.pc .art video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  transition:transform .5s var(--ease)}
-.pc:hover .art img,.pc:hover .art video{transform:scale(1.05)}
-.pc .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:8px;padding:18px;text-align:center}
-.pc .ph b{font-size:17px;font-weight:750;letter-spacing:-.3px;color:var(--tx)}
-.pc .ph i{font-style:normal;font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;
-  color:var(--cy-hi);font-weight:750}
-.pc .veil{position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(6,8,10,.96) 0%,rgba(6,8,10,.72) 26%,rgba(6,8,10,0) 58%)}
-.pc .info{position:absolute;left:0;right:0;bottom:0;padding:16px 16px 15px}
-.pc .info h3{margin:0;font-size:16px;font-weight:750;letter-spacing:-.3px;line-height:1.25}
-.pc .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
-.pc .tag{font-size:10px;font-weight:750;letter-spacing:.7px;text-transform:uppercase;
-  padding:3px 8px;border-radius:4px;background:rgba(0,163,195,.16);color:var(--cy-hi);
-  border:1px solid rgba(0,163,195,.3)}
-.pc .size{position:absolute;top:12px;right:12px;background:var(--ye);color:var(--on-ye);
-  font-size:10.5px;font-weight:800;padding:4px 9px;border-radius:5px;
-  font-family:ui-monospace,Consolas,monospace;letter-spacing:.2px}
-.pc .badge{position:absolute;top:12px;left:12px;background:rgba(6,8,10,.8);
-  backdrop-filter:blur(6px);border:1px solid rgba(53,216,245,.4);color:var(--cy-hi);
-  font-size:10px;font-weight:750;letter-spacing:1px;text-transform:uppercase;
-  padding:4px 9px;border-radius:5px}
-.pc .go{position:absolute;top:50%;left:50%;width:58px;height:58px;margin:-29px 0 0 -29px;
-  border-radius:99px;background:rgba(0,163,195,.92);display:grid;place-items:center;
-  opacity:0;transform:scale(.75);transition:.3s var(--ease);box-shadow:0 8px 26px rgba(0,0,0,.45)}
-.pc:hover .go{opacity:1;transform:scale(1)}
-.pc .go svg{width:22px;height:22px;fill:#03171b;margin-left:3px}
-
-/* ---------------- modal ---------------- */
-.mod{position:fixed;inset:0;z-index:200;display:none;place-items:center;padding:26px}
-.mod.on{display:grid}
-.mod .bd{position:absolute;inset:0;background:rgba(4,6,8,.86);backdrop-filter:blur(10px);
-  opacity:0;transition:opacity .3s var(--ease)}
-.mod.in .bd{opacity:1}
-.mod .panel{position:relative;width:min(1040px,100%);max-height:calc(100vh - 52px);
-  background:var(--bg-2);border:1px solid var(--line-2);border-radius:16px;overflow:hidden;
-  display:grid;grid-template-columns:auto 1fr;gap:0;
-  opacity:0;transform:translateY(18px) scale(.985);transition:.34s var(--ease)}
-.mod.in .panel{opacity:1;transform:none}
-@media(max-width:880px){
-  .mod{padding:0}
-  .mod .panel{grid-template-columns:1fr;max-height:100vh;height:100vh;border-radius:0;
-    overflow-y:auto;border:0}
-}
-.stage{background:#05070a;padding:22px;display:grid;place-items:center;
-  border-right:1px solid var(--line)}
-@media(max-width:880px){.stage{border-right:0;border-bottom:1px solid var(--line);padding:16px}}
-.phone{position:relative;width:min(316px,72vw);aspect-ratio:9/16;background:#000;
-  border-radius:26px;border:1px solid var(--line-2);overflow:hidden;
-  box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 0 6px #0b0e11}
-.phone iframe{width:100%;height:100%;border:0;display:block;background:#000}
-.phone .load{position:absolute;inset:0;display:grid;place-items:center;gap:12px;
-  align-content:center;color:var(--tx-dim);font-size:13px;letter-spacing:.4px}
-.spin{width:26px;height:26px;border:2.5px solid var(--line-2);border-top-color:var(--cy-hi);
-  border-radius:99px;animation:sp .8s linear infinite}
+/* ── device ────────────────────────────────────────────── */
+.dev{position:relative;width:100%;max-width:340px;margin:0 auto;aspect-ratio:9/16;
+  background:#000;border-radius:30px;border:1px solid var(--ln2);overflow:hidden;
+  box-shadow:0 40px 90px rgba(0,0,0,.7),0 0 0 7px #0b0d10,0 0 60px rgba(0,163,195,.09)}
+.dev iframe{width:100%;height:100%;border:0;display:block;background:#000}
+.dev .slot{position:absolute;inset:0;display:grid;place-items:center;align-content:center;
+  gap:14px;padding:26px;text-align:center;
+  background:repeating-linear-gradient(135deg,#0e1216 0 12px,#0b0e12 12px 24px)}
+.dev .slot b{font-size:15px;font-weight:700;color:var(--mid)}
+.dev .slot i{font-style:normal;font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;
+  color:var(--dim)}
+.dev .tap{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:16px;
+  cursor:pointer;background:linear-gradient(160deg,#10323b,#0a1418 55%,#141017);
+  transition:opacity .45s var(--e)}
+.dev .tap .ring{width:74px;height:74px;border-radius:99px;background:var(--cy);
+  display:grid;place-items:center;box-shadow:0 0 0 0 rgba(0,163,195,.5);
+  animation:pulse 2.4s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 26px rgba(0,163,195,0)}100%{box-shadow:0 0 0 0 rgba(0,163,195,0)}}
+.dev .tap svg{width:26px;height:26px;fill:#04191d;margin-left:4px}
+.dev .tap b{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--tx);font-weight:700}
+.dev .tap s{text-decoration:none;font-size:11.5px;color:var(--mid)}
+.dev .spin{position:absolute;inset:0;display:grid;place-items:center}
+.dev .spin i{width:26px;height:26px;border:2.5px solid var(--ln2);border-top-color:var(--cyh);
+  border-radius:99px;animation:sp .8s linear infinite;display:block}
 @keyframes sp{to{transform:rotate(360deg)}}
+.devcap{margin:16px auto 0;max-width:340px;display:flex;justify-content:space-between;
+  gap:12px;font-size:11.5px;letter-spacing:.7px;text-transform:uppercase;color:var(--dim)}
+.devcap b{color:var(--ye);font-family:ui-monospace,Consolas,monospace;letter-spacing:0}
 
-.det{padding:30px 30px 30px;overflow-y:auto;max-height:calc(100vh - 52px)}
-@media(max-width:880px){.det{max-height:none;padding:24px 22px 40px}}
-.det .top{display:flex;align-items:flex-start;gap:14px}
-.det h3{margin:0;font-size:23px;font-weight:780;letter-spacing:-.7px;line-height:1.2}
-.det .chip{flex:none;background:var(--ye);color:var(--on-ye);font-size:11px;font-weight:800;
-  padding:5px 10px;border-radius:5px;font-family:ui-monospace,Consolas,monospace}
-.det .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
-.det .tag{font-size:11px;font-weight:750;letter-spacing:.7px;text-transform:uppercase;
-  padding:4px 9px;border-radius:5px;background:rgba(0,163,195,.14);color:var(--cy-hi);
-  border:1px solid rgba(0,163,195,.28)}
-.det .desc{margin:18px 0 0;font-size:15px;color:var(--tx-mid);line-height:1.68}
-.det .lab{display:block;margin:24px 0 0;font-size:11px;letter-spacing:1.7px;
-  text-transform:uppercase;color:var(--ye);font-weight:780}
-.det ul.did{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:7px}
-.det ul.did li{font-size:12.5px;color:var(--tx);background:var(--card-2);
-  border:1px solid var(--line);padding:5px 11px;border-radius:6px}
-.det .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
-.det .acts .btn{padding:10px 18px;font-size:14px}
-.x{position:absolute;top:14px;right:14px;z-index:5;width:36px;height:36px;border-radius:99px;
-  background:rgba(10,13,16,.86);border:1px solid var(--line-2);color:var(--tx-mid);
-  display:grid;place-items:center;cursor:pointer;transition:.2s var(--ease);font-size:18px;line-height:1}
-.x:hover{color:var(--tx);border-color:var(--cy);background:rgba(0,163,195,.16)}
+/* ── marquee ───────────────────────────────────────────── */
+.marq{border-block:1px solid var(--ln);padding:22px 0;overflow:hidden;margin-top:40px;
+  background:var(--bg2)}
+.marq .row{display:flex;gap:36px;width:max-content;animation:slide 34s linear infinite}
+.marq span{font-size:clamp(24px,4vw,44px);font-weight:800;letter-spacing:-.035em;
+  -webkit-text-stroke:1px var(--ln2);color:transparent;white-space:nowrap}
+.marq span.on{-webkit-text-stroke:0;color:var(--cy)}
+.marq i{font-style:normal;font-size:clamp(24px,4vw,44px);color:var(--ye);opacity:.5}
+@keyframes slide{to{transform:translateX(-50%)}}
 
-/* ---------------- process ---------------- */
-.flow{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);
-  border-radius:12px;overflow:hidden;grid-template-columns:repeat(auto-fit,minmax(248px,1fr))}
-.step{background:var(--bg-2);padding:26px 24px;transition:background .25s var(--ease)}
-.step:hover{background:var(--card-2)}
-.step .k{font-family:ui-monospace,Consolas,monospace;font-size:12px;font-weight:700;
-  color:var(--ye);letter-spacing:1.2px}
-.step h4{margin:12px 0 9px;font-size:16.5px;font-weight:730;letter-spacing:-.3px}
-.step p{margin:0;font-size:14.5px;color:var(--tx-mid);line-height:1.62}
-.step p b{color:var(--cy-hi);font-weight:650}
+/* ── sections ──────────────────────────────────────────── */
+section{padding:110px 0 0}
+.shd{display:grid;gap:14px;margin-bottom:48px;
+  grid-template-columns:auto 1fr;align-items:start}
+.shd .num{font-family:ui-monospace,Consolas,monospace;font-size:clamp(40px,6vw,74px);
+  font-weight:700;line-height:.8;color:transparent;-webkit-text-stroke:1.2px var(--ln2)}
+.shd h2{margin:0;font-size:clamp(28px,4.6vw,50px);font-weight:800;letter-spacing:-.04em;line-height:1}
+.shd p{margin:14px 0 0;color:var(--dim);font-size:14.5px;max-width:46ch}
 
-/* ---------------- about ---------------- */
-.about{display:grid;gap:38px;grid-template-columns:1fr}
-@media(min-width:900px){.about{grid-template-columns:1.4fr .9fr}}
-.about p{font-size:16px;color:var(--tx-mid);margin:0 0 17px;max-width:64ch;line-height:1.75}
-.about p b{color:var(--tx);font-weight:650}
-.about .hi{color:var(--cy-hi);font-weight:650}
-.side{background:var(--bg-2);border:1px solid var(--line);border-radius:12px;
-  padding:24px;height:fit-content}
-.side h4{margin:0 0 15px;font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:var(--ye)}
-.side dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:10px 16px;font-size:14px}
-.side dt{color:var(--tx-dim);white-space:nowrap}
-.side dd{margin:0;color:var(--tx)}
-.prev{margin-top:22px;padding-top:20px;border-top:1px solid var(--line);font-size:13.5px;
-  color:var(--tx-mid);line-height:1.6}
-.prev b{color:var(--tx)}
-.games{list-style:none;margin:13px 0 0;padding:0}
-.games li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
-  padding:8px 0;border-bottom:1px dashed var(--line);font-size:13.5px;color:var(--tx)}
-.games li:last-child{border-bottom:0}
-.games span{font-family:ui-monospace,Consolas,monospace;font-size:11px;color:var(--ye);
-  white-space:nowrap;font-weight:700}
+/* ── work: sticky stage + list ─────────────────────────── */
+.work{display:grid;gap:44px;grid-template-columns:1fr;align-items:start}
+@media(min-width:1000px){.work{grid-template-columns:390px 1fr;gap:60px}}
+.stage{position:sticky;top:96px}
+@media(max-width:999px){.stage{position:sticky;top:76px;z-index:20;
+  background:linear-gradient(to bottom,var(--bg) 78%,transparent);padding-bottom:20px}
+  .stage .dev{max-width:250px}}
+.plist{display:flex;flex-direction:column;border-top:1px solid var(--ln)}
+.pi{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;
+  padding:20px 4px;border-bottom:1px solid var(--ln);text-align:left;width:100%;
+  transition:padding .35s var(--e),background .3s}
+.pi:hover{background:rgba(255,255,255,.018);padding-left:14px}
+.pi.on{padding-left:14px;background:linear-gradient(90deg,rgba(0,163,195,.09),transparent 70%)}
+.pi .k{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--dim);
+  transition:color .3s}
+.pi.on .k,.pi:hover .k{color:var(--cyh)}
+.pi h3{margin:0;font-size:clamp(18px,2.4vw,25px);font-weight:730;letter-spacing:-.03em;
+  transition:color .3s}
+.pi.on h3{color:var(--cyh)}
+.pi .tg{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.pi .tg s{text-decoration:none;font-size:10.5px;font-weight:700;letter-spacing:.8px;
+  text-transform:uppercase;color:var(--dim);border:1px solid var(--ln2);
+  padding:2.5px 8px;border-radius:4px;transition:.3s}
+.pi.on .tg s{color:var(--cy);border-color:rgba(0,163,195,.4)}
+.pi .sz{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--ye);
+  white-space:nowrap;opacity:.75}
+.pi.ph h3{color:var(--dim)}
+.pi.ph .sz{color:var(--dim)}
 
-/* ---------------- contact ---------------- */
-.contact{position:relative;background:var(--bg-2);border:1px solid var(--line);
-  border-radius:16px;padding:52px 34px;text-align:center;overflow:hidden;margin-top:10px}
-.contact::before{content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(680px 240px at 50% 0%,rgba(0,163,195,.17),transparent 72%)}
-.contact>*{position:relative}
-.contact h2{margin:0;font-size:clamp(26px,4.2vw,38px);font-weight:800;letter-spacing:-1.1px}
-.contact p{margin:14px auto 0;max-width:50ch;color:var(--tx-mid)}
-.clinks{display:flex;flex-wrap:wrap;gap:11px;justify-content:center;margin-top:30px}
+.pmeta{margin-top:26px;padding-top:22px;border-top:1px solid var(--ln)}
+.pmeta .lab{font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;
+  color:var(--ye);font-weight:750}
+.pmeta p{margin:12px 0 0;font-size:14.5px;color:var(--mid);line-height:1.66}
+.pmeta ul{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:7px}
+.pmeta li{font-size:12px;color:var(--tx);background:var(--pan2);border:1px solid var(--ln);
+  padding:5px 11px;border-radius:5px}
+.pmeta .acts{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.lnk{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:650;
+  color:var(--cyh);border-bottom:1px solid rgba(63,220,247,.35);padding-bottom:2px;
+  transition:.25s}
+.lnk:hover{border-color:var(--cyh);gap:11px}
 
-footer{border-top:1px solid var(--line);margin-top:82px;padding:28px 0 52px;color:var(--tx-dim);
-  font-size:13.5px;display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between}
+/* ── UI gallery ────────────────────────────────────────── */
+.uig{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.uic{position:relative;border:1px solid var(--ln);border-radius:12px;overflow:hidden;
+  background:var(--pan);transition:transform .45s var(--e),border-color .35s}
+.uic:hover{transform:translateY(-7px) rotate(-.5deg);border-color:var(--cy)}
+.uic img{aspect-ratio:1;object-fit:cover;width:100%}
+.uic figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 14px 13px;
+  font-size:12px;letter-spacing:1.1px;text-transform:uppercase;font-weight:700;color:var(--tx);
+  background:linear-gradient(to top,rgba(5,6,8,.94),transparent)}
 
-/* ---------------- motion ---------------- */
-.rv{opacity:0;transform:translateY(22px);
-  transition:opacity .62s var(--ease),transform .62s var(--ease)}
-.rv.in{opacity:1;transform:none}
+/* ── process ───────────────────────────────────────────── */
+.flow{display:grid;gap:0;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.st{padding:30px 26px;border:1px solid var(--ln);margin:-.5px;transition:background .3s}
+.st:hover{background:var(--pan)}
+.st .k{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--ye);letter-spacing:1px}
+.st h4{margin:14px 0 10px;font-size:17px;font-weight:730;letter-spacing:-.02em}
+.st p{margin:0;font-size:14.5px;color:var(--mid);line-height:1.65}
+.st p b{color:var(--cyh);font-weight:650}
+
+/* ── about ─────────────────────────────────────────────── */
+.ab{display:grid;gap:48px;grid-template-columns:1fr}
+@media(min-width:900px){.ab{grid-template-columns:300px 1fr;gap:60px}}
+.port{position:relative}
+.port img{border-radius:14px;filter:grayscale(.25) contrast(1.04)}
+.port .fr{position:absolute;inset:-11px -11px 11px 11px;border:1px solid var(--cy);
+  border-radius:14px;pointer-events:none;opacity:.5}
+.port .cap{margin-top:20px;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--dim)}
+.ab p{font-size:16.5px;color:var(--mid);margin:0 0 20px;max-width:62ch;line-height:1.78}
+.ab p:first-child{font-size:19px;color:var(--tx)}
+.ab p b{color:var(--tx);font-weight:650}
+.ab .hi{color:var(--cyh);font-weight:600}
+.gm{list-style:none;margin:28px 0 0;padding:22px 0 0;border-top:1px solid var(--ln);max-width:62ch}
+.gm .h{font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--ye);
+  font-weight:750;margin-bottom:14px}
+.gm li{display:flex;justify-content:space-between;gap:16px;padding:9px 0;
+  border-bottom:1px dashed var(--ln);font-size:14px}
+.gm li:last-child{border:0}
+.gm b{font-weight:500;color:var(--tx)}
+.gm span{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;color:var(--ye);
+  white-space:nowrap;opacity:.85}
+
+/* ── contact ───────────────────────────────────────────── */
+.ct{padding:120px 0 40px}
+.ct h2{margin:0;font-size:clamp(34px,7vw,86px);font-weight:800;letter-spacing:-.05em;line-height:.95}
+.ct h2 em{font-style:normal;color:var(--cyh)}
+.ct .sub{margin:26px 0 0;color:var(--mid);max-width:44ch;font-size:17px}
+.ct .ls{display:flex;flex-wrap:wrap;gap:12px 30px;margin-top:40px;padding-top:26px;
+  border-top:1px solid var(--ln)}
+.ct .ls a{font-size:15px;font-weight:600;color:var(--mid);transition:.25s;
+  display:inline-flex;align-items:center;gap:8px}
+.ct .ls a:hover{color:var(--cyh)}
+.ct .ls a::before{content:"↗";font-size:12px;color:var(--ye);opacity:.7}
+footer{padding:40px 0 54px;color:var(--dim);font-size:13px;display:flex;
+  flex-wrap:wrap;gap:12px;justify-content:space-between}
+
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .rv{opacity:1;transform:none;transition:none}
-  .pc:hover{transform:none}
-  .mod .panel,.mod .bd{transition:none}
-  .spin{animation:none}
+  .marq .row{animation:none}
+  .dev .tap .ring{animation:none}
+  *{transition-duration:.01ms!important}
 }
 </style>
 </head>
@@ -262,142 +235,167 @@ footer{border-top:1px solid var(--line);margin-top:82px;padding:28px 0 52px;colo
 
 <nav>
   <div class="wrap">
-    <span class="brand">Daria <b>Shchipanova</b></span>
+    <a class="brand" href="#top">Daria <i>Shchipanova</i></a>
     <ul>
       <li><a href="#work">Work</a></li>
+      <li><a href="#ui">UI</a></li>
       <li><a href="#process">Process</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <a class="ncta" href="#work">Play the ads</a>
   </div>
 </nav>
 
-<header class="hero">
-  <div class="wrap">
-    <span class="eyebrow rv"><i></i>Technical Artist — Playable Ads</span>
-    <h1 class="rv">Playable ads that ship under <em>5&nbsp;MB</em>.</h1>
-    <p class="lede rv">
-      I produce and implement the visual side of playable creatives — <b>scene assembly,
-      animation, VFX, UI</b> — and I build the tooling that makes them at volume.
-      Everything here runs in your browser. Not video, not mockups.
-    </p>
-    <div class="hbtns rv">
-      <a class="btn solid" href="#work">Play the ads</a>
-      <a class="btn out" href="#process">How I work</a>
+<header class="hero" id="top">
+  <span class="glow"></span><span class="glow2"></span>
+  <div class="wrap hgrid">
+    <div>
+      <div class="tagline js-fade"><s></s>Technical Artist — Playable Ads</div>
+      <h1>
+        <span class="ln"><span>I make ads</span></span>
+        <span class="ln"><span>you can <em>play</em>.</span></span>
+        <span class="ln"><span>Under <u>5 MB</u>.</span></span>
+      </h1>
+      <p class="lede js-fade">
+        Five years in mobile games, most of it where art meets engineering. I build the
+        creative <b>and</b> the pipeline that produces it — scene assembly, animation, VFX,
+        shaders, and the tools that take the repetitive half out of the job.
+      </p>
+      <div class="meta js-fade">
+        <div><div class="n">12–13</div><div class="l">Playables / month</div></div>
+        <div><div class="n y" data-to="5" data-suf=" MB">5 MB</div><div class="l">Build ceiling</div></div>
+        <div><div class="n">2D → 3D</div><div class="l">Puzzle to shooter</div></div>
+        <div><div class="n">30+</div><div class="l">Shipped titles</div></div>
+      </div>
     </div>
 
-    <div class="stats rv">
-      <div class="stat"><div class="n">12–13</div><div class="l">playable creatives a month</div></div>
-      <div class="stat"><div class="n" data-to="5" data-suf=" MB">5 MB</div><div class="l">hard build ceiling, every time</div></div>
-      <div class="stat"><div class="n">2D → 3D</div><div class="l">puzzle, merge, tycoon, shooter</div></div>
-      <div class="stat"><div class="n">Full-cycle</div><div class="l">art, VFX, shaders and the pipeline</div></div>
+    <div class="js-fade">
+      <div class="dev" id="hdev"></div>
+      <div class="devcap">
+        <span>Temple Escape — built solo</span><b>2.93 MB</b>
+      </div>
     </div>
   </div>
 </header>
+
+<div class="marq">
+  <div class="row" id="marq"></div>
+</div>
 
 <main>
 
 <section id="work">
   <div class="wrap">
-    <div class="shead rv">
-      <span class="idx">01</span>
-      <h2>Playables</h2>
-      <p class="sub">Real builds, not captures. Tap a card and it opens right here.</p>
+    <div class="shd js-fade">
+      <span class="num">01</span>
+      <div>
+        <h2>Playables</h2>
+        <p>Real builds, running here in the page. Pick one from the list — it loads into the
+           phone and stays with you as you scroll.</p>
+      </div>
     </div>
-    <div class="grid" id="grid"></div>
+
+    <div class="work">
+      <div class="stage">
+        <div class="dev" id="sdev"></div>
+        <div class="devcap"><span id="scap">Select a playable</span><b id="ssz"></b></div>
+      </div>
+      <div>
+        <div class="plist" id="plist"></div>
+        <div class="pmeta" id="pmeta"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ui">
+  <div class="wrap">
+    <div class="shd js-fade">
+      <span class="num">02</span>
+      <div>
+        <h2>UI &amp; assets</h2>
+        <p>Game UI with the asset sheets behind it — every element drawn, sliced and named
+           for the build.</p>
+      </div>
+    </div>
+    <div class="uig" id="uig"></div>
   </div>
 </section>
 
 <section id="process">
   <div class="wrap">
-    <div class="shead rv">
-      <span class="idx">02</span>
-      <h2>Tools &amp; pipeline</h2>
-      <p class="sub">The half of the job that never shows up in the creative.</p>
+    <div class="shd js-fade">
+      <span class="num">03</span>
+      <div>
+        <h2>Tools &amp; pipeline</h2>
+        <p>The half of the job that never shows up in the creative.</p>
+      </div>
     </div>
-    <div class="flow rv">
-      <div class="step">
-        <div class="k">01 / TOOLING</div>
-        <h4>Electron production tool</h4>
-        <p>Built around the studio playable template. <b>Generates particle emitters</b> and
-           strips repetitive setup out of every build.</p>
-      </div>
-      <div class="step">
-        <div class="k">02 / PROCEDURAL</div>
-        <h4>Blender systems</h4>
+    <div class="flow js-fade">
+      <div class="st"><div class="k">01 / TOOLING</div><h4>Electron production tool</h4>
+        <p>Built around our playable template. <b>Generates particle emitters</b> and takes
+           the repetitive setup out of every build.</p></div>
+      <div class="st"><div class="k">02 / PROCEDURAL</div><h4>Blender systems</h4>
         <p><b>Geometry Nodes</b> for scattering and instancing, plus AI-assisted scripts for
-           asset renaming and vertex-index restructuring.</p>
-      </div>
-      <div class="step">
-        <div class="k">03 / VFX</div>
-        <h4>Shaders &amp; effects</h4>
+           renaming and vertex-index restructuring.</p></div>
+      <div class="st"><div class="k">03 / VFX</div><h4>Shaders &amp; effects</h4>
         <p>Custom shaders authored for <b>reusable VFX workflows</b> across creatives, not
-           one-off effects per ad.</p>
-      </div>
-      <div class="step">
-        <div class="k">04 / BUDGET</div>
-        <h4>Optimisation</h4>
-        <p>Texture atlasing, mesh reduction, <b>particle and draw-call budgets</b> — holding
-           quality against a ceiling that never moves.</p>
-      </div>
+           one-off effects per ad.</p></div>
+      <div class="st"><div class="k">04 / BUDGET</div><h4>Optimisation</h4>
+        <p>Atlasing, mesh reduction, <b>particle and draw-call budgets</b> — holding quality
+           against a ceiling that never moves.</p></div>
     </div>
   </div>
 </section>
 
 <section id="about">
   <div class="wrap">
-    <div class="shead rv"><span class="idx">03</span><h2>About</h2></div>
-    <div class="about rv">
+    <div class="shd js-fade">
+      <span class="num">04</span>
+      <div><h2>About</h2></div>
+    </div>
+    <div class="ab js-fade">
+      <div class="port">
+        <img src="assets/daria.webp" alt="Daria Shchipanova" width="760" height="760">
+        <span class="fr"></span>
+        <div class="cap">Daria — remote, wherever the wifi holds</div>
+      </div>
       <div>
-        <p>I'm a technical artist with <b>5+ years in mobile games</b>, working where art meets
-          engineering. Day to day I sit between the artists and the developers: preparing assets
-          for <span class="hi">code-based implementation</span>, assembling and polishing scenes,
-          and making the result fit a build budget that does not move.</p>
-        <p>I don't hand assets off and walk away. I build the tooling that produces them — an
-          Electron tool around our playable template, procedural Blender systems, custom shaders —
-          because the repetitive half of creative production shouldn't be done by hand.</p>
+        <p>I'm a technical artist. I sit between the artists and the developers: preparing
+          assets for <span class="hi">code-based implementation</span>, assembling and
+          polishing scenes, and making all of it fit a budget that does not move.</p>
+        <p>I don't hand assets off and walk away. I build the tooling that makes them — an
+          Electron tool wrapped around our playable template, procedural Blender systems,
+          custom shaders — because the repetitive half of creative production shouldn't be
+          done by hand. Twelve to thirteen playables a month is only survivable that way.</p>
         <p>I also read the numbers. At <b>Nexters Global</b> I worked with
           <span class="hi">CPI, CTR and retention</span> and fed them back into art decisions.
           Creatives are testable hypotheses, not deliverables.</p>
+        <p>My degree is in <b>optics engineering</b>, which turns out to be a reasonable way
+          into rendering.</p>
+        <ul class="gm">
+          <div class="h">Before playables — 30+ shipped mobile games</div>
+          <li><b>Isle Builder: Click to Survive</b><span>5M+ · 4.2★</span></li>
+          <li><b>Survival City Builder</b><span>5M+ · 3.8★</span></li>
+          <li><b>Idle Pet Shop</b><span>1M+ · 4.5★</span></li>
+          <li><b>Fantasy Tavern</b> — Nexters<span>100K+</span></li>
+        </ul>
       </div>
-      <aside class="side">
-        <h4>At a glance</h4>
-        <dl>
-          <dt>Focus</dt><dd>Playable ads, VFX, pipeline</dd>
-          <dt>Engines</dt><dd>Custom JS (Pixi / Three), Unity, Cocos</dd>
-          <dt>Code</dt><dd>JavaScript, Electron, Node, Git</dd>
-          <dt>Art</dt><dd>Blender, Spine, Substance, Photoshop</dd>
-          <dt>Work</dt><dd>Remote</dd>
-        </dl>
-        <div class="prev">
-          <b>Before playables</b> — solo 3D artist on 30+ published mobile games,
-          three at 1M–5M+ downloads:
-          <ul class="games">
-            <li>Isle Builder: Click to Survive <span>5M+ · 4.2★</span></li>
-            <li>Survival City Builder <span>5M+ · 3.8★</span></li>
-            <li>Idle Pet Shop <span>1M+ · 4.5★</span></li>
-            <li>Fantasy Tavern <span>100K+ · Nexters</span></li>
-          </ul>
-        </div>
-      </aside>
     </div>
   </div>
 </section>
 
-<section>
+<section class="ct" id="contact">
   <div class="wrap">
-    <div class="contact rv" id="contact">
-      <h2>Let's work together</h2>
-      <p>Looking for a technical artist who can build the creative <em>and</em> the pipeline
-         that produces it? I'm open to talk.</p>
-      <div class="clinks">
-        <a class="btn ye" href="mailto:dasha96schipanova@gmail.com">Email me</a>
-        <a class="btn out" href="https://t.me/omnomnom08" target="_blank" rel="noopener">Telegram</a>
-        <a class="btn out" href="https://www.linkedin.com/in/omnomnom08" target="_blank" rel="noopener">LinkedIn</a>
-        <a class="btn out" href="https://www.artstation.com/omnomnom08" target="_blank" rel="noopener">ArtStation</a>
-        <a class="btn out" href="https://github.com/omnomnom08" target="_blank" rel="noopener">GitHub</a>
-      </div>
+    <h2 class="js-fade">Let's make<br>something <em>playable</em>.</h2>
+    <p class="sub js-fade">Open to technical artist roles where the pipeline is part of the
+       job, not a favour I do on the side.</p>
+    <div class="ls js-fade">
+      <a href="mailto:dasha96schipanova@gmail.com">dasha96schipanova@gmail.com</a>
+      <a href="https://t.me/omnomnom08" target="_blank" rel="noopener">Telegram</a>
+      <a href="https://www.linkedin.com/in/omnomnom08" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://www.artstation.com/omnomnom08" target="_blank" rel="noopener">ArtStation</a>
+      <a href="https://github.com/omnomnom08" target="_blank" rel="noopener">GitHub</a>
     </div>
   </div>
 </section>
@@ -406,171 +404,204 @@ footer{border-top:1px solid var(--line);margin-top:82px;padding:28px 0 52px;colo
 
 <footer class="wrap">
   <span>Daria Shchipanova — Technical Artist, Playable Ads</span>
-  <span class="mono">dasha96schipanova@gmail.com · @omnomnom08</span>
+  <span class="mono">Built by hand. No template.</span>
 </footer>
 
-<!-- playable overlay -->
-<div class="mod" id="mod" role="dialog" aria-modal="true" aria-labelledby="mtitle">
-  <div class="bd" data-close></div>
-  <div class="panel">
-    <button class="x" data-close aria-label="Close">&#10005;</button>
-    <div class="stage">
-      <div class="phone" id="phone"></div>
-    </div>
-    <div class="det">
-      <div class="top">
-        <h3 id="mtitle"></h3>
-        <span class="chip" id="msize"></span>
-      </div>
-      <div class="tags" id="mtags"></div>
-      <p class="desc" id="mdesc"></p>
-      <span class="lab">What I did</span>
-      <ul class="did" id="mdid"></ul>
-      <div class="acts" id="macts"></div>
-    </div>
-  </div>
-</div>
-
 <script>
-/* ==================================================================
-   PLAYABLES — add an entry:
+/* ═══════════════════════════════════════════════════════════════
+   PLAYABLES — 10 slots. Two are real; eight are placeholders so
+   the layout can be judged before the builds are chosen.
+
+   To fill a slot:
      1. node scripts/debrand.mjs "<build.zip>" <slug>
-     2. paste the printed row below
-     3. optional  poster:'assets/posters/<slug>.jpg'
-                  loop:'assets/posters/<slug>.webm'
-   Fields: slug title tags[] desc did[] size badge? source?
-   ================================================================== */
+     2. set slug, drop `ph:true`, write title/tags/desc/did/size
+   ═══════════════════════════════════════════════════════════════ */
 var PLAYABLES = [
-  {
-    slug: "temple-escape",
-    title: "Temple Escape",
-    badge: "Built from scratch",
-    tags: ["Match-3", "2D + 3D", "Solo build"],
-    desc: "A match-3 rescue playable written from an empty folder on Pixi.js 8, Three.js and GSAP — 20 modules, ~8,300 lines, shipping as one self-contained file. The only piece here where the source is public as well as the result.",
-    did: ["Concept", "All art", "All code", "Custom debris physics", "Hand-written VFX", "Three.js character rig", "Art pipeline tool", "Build setup"],
-    size: "2.93 MB",
-    source: "https://github.com/omnomnom08/temple-escape"
-  },
-  {
-    slug: "train-tycoon-3d",
-    title: "3D Tycoon Builder",
-    tags: ["Tycoon", "3D", "Idle"],
-    desc: "Full 3D build-and-upgrade creative with a physics layer, held inside the ad-network size budget.",
-    did: ["Scene assembly", "3D animation", "VFX", "UI", "Size optimisation"],
-    size: "4.74 MB"
-  }
+  { slug:"temple-escape", title:"Temple Escape", size:"2.93 MB",
+    tags:["Match-3","2D + 3D","Solo build"],
+    desc:"A match-3 rescue playable written from an empty folder on Pixi.js 8, Three.js and GSAP — 20 modules, ~8,300 lines, shipping as one self-contained file. The only piece here where the source is public too.",
+    did:["Concept","All art","All code","Custom debris physics","Hand-written VFX","Three.js character rig","Art pipeline tool","Build setup"],
+    source:"https://github.com/omnomnom08/temple-escape" },
+
+  { slug:"train-tycoon-3d", title:"3D Tycoon Builder", size:"4.74 MB",
+    tags:["Tycoon","3D","Idle"],
+    desc:"Full 3D build-and-upgrade creative with a physics layer, held inside the ad-network size budget.",
+    did:["Scene assembly","3D animation","VFX","UI","Size optimisation"] },
+
+  { ph:true, title:"Slot 03", size:"— MB", tags:["Merge","2D"],
+    desc:"Placeholder. Swap in a merge creative.", did:["Scene assembly","VFX","UI"] },
+  { ph:true, title:"Slot 04", size:"— MB", tags:["Match-3","2D"],
+    desc:"Placeholder. Swap in a match-3 creative.", did:["Scene assembly","Animation"] },
+  { ph:true, title:"Slot 05", size:"— MB", tags:["Shooter","3D"],
+    desc:"Placeholder. Swap in the 3D shooter.", did:["3D animation","VFX","Optimisation"] },
+  { ph:true, title:"Slot 06", size:"— MB", tags:["Puzzle","2D"],
+    desc:"Placeholder. Swap in a puzzle creative.", did:["UI","Animation"] },
+  { ph:true, title:"Slot 07", size:"— MB", tags:["Idle","3D"],
+    desc:"Placeholder.", did:["Scene assembly","VFX"] },
+  { ph:true, title:"Slot 08", size:"— MB", tags:["Runner","3D"],
+    desc:"Placeholder.", did:["3D animation","Optimisation"] },
+  { ph:true, title:"Slot 09", size:"— MB", tags:["Solitaire","2D"],
+    desc:"Placeholder.", did:["UI","Animation"] },
+  { ph:true, title:"Slot 10", size:"— MB", tags:["Physics","3D"],
+    desc:"Placeholder.", did:["VFX","Shaders"] }
+];
+
+var UI_WORK = [
+  { f:"merge_00",     t:"Merge — battle UI" },
+  { f:"merge_01",     t:"Merge — asset sheet" },
+  { f:"merge_02",     t:"Merge — meta screen" },
+  { f:"puzzle_00",    t:"Puzzle — board UI" },
+  { f:"puzzle_01",    t:"Puzzle — asset sheet" },
+  { f:"hidenseek_00", t:"Hide & Seek — HUD" },
+  { f:"hidenseek_01", t:"Hide & Seek — assets" }
 ];
 
 (function () {
-  var esc = function (s) {
-    return String(s).replace(/[&<>"]/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
-    });
-  };
-  var PLAY_SVG = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) {
+    return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]; }); };
+  var PLAY = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
 
-  /* ---------- cards ---------- */
-  document.getElementById("grid").innerHTML = PLAYABLES.map(function (p, i) {
-    var art = p.loop
-      ? '<video src="' + esc(p.loop) + '" autoplay muted loop playsinline></video>'
-      : p.poster
-        ? '<img src="' + esc(p.poster) + '" alt="' + esc(p.title) + '" loading="lazy">'
-        : '<div class="ph"><b>' + esc(p.title) + "</b><i>Playable</i></div>";
-    return '<article class="pc rv" tabindex="0" role="button" data-i="' + i +
-             '" aria-label="Open ' + esc(p.title) + '" style="transition-delay:' + (i % 4) * 70 + 'ms">' +
-             '<div class="art">' + art +
-               '<div class="veil"></div>' +
-               (p.badge ? '<span class="badge">' + esc(p.badge) + "</span>" : "") +
-               '<span class="size">' + esc(p.size) + "</span>" +
-               '<span class="go">' + PLAY_SVG + "</span>" +
-               '<div class="info"><h3>' + esc(p.title) + "</h3>" +
-                 '<div class="tags">' + p.tags.map(function (t) {
-                   return '<span class="tag">' + esc(t) + "</span>";
-                 }).join("") + "</div></div>" +
-             "</div></article>";
+  /* ---- marquee ---- */
+  var words = ["MATCH-3","MERGE","TYCOON","SHOOTER","IDLE","PUZZLE","RUNNER","SOLITAIRE","PHYSICS"];
+  var row = "";
+  for (var r = 0; r < 2; r++)
+    row += words.map(function (w, i) {
+      return '<span class="' + (i % 3 === 1 ? "on" : "") + '">' + w + "</span><i>◆</i>";
+    }).join("");
+  document.getElementById("marq").innerHTML = row;
+
+  /* ---- UI gallery ---- */
+  document.getElementById("uig").innerHTML = UI_WORK.map(function (u) {
+    return '<figure class="uic js-fade"><img src="assets/ui/' + u.f +
+      '.webp" alt="' + esc(u.t) + '" loading="lazy" width="900" height="900">' +
+      "<figcaption>" + esc(u.t) + "</figcaption></figure>";
   }).join("");
 
-  /* ---------- modal ---------- */
-  var mod = document.getElementById("mod"),
-      phone = document.getElementById("phone"),
-      lastFocus = null;
-
-  function open(i) {
-    var p = PLAYABLES[i];
-    lastFocus = document.activeElement;
-    document.getElementById("mtitle").textContent = p.title;
-    document.getElementById("msize").textContent = p.size;
-    document.getElementById("mdesc").textContent = p.desc;
-    document.getElementById("mtags").innerHTML = p.tags.map(function (t) {
-      return '<span class="tag">' + esc(t) + "</span>";
-    }).join("");
-    document.getElementById("mdid").innerHTML = p.did.map(function (d) {
-      return "<li>" + esc(d) + "</li>";
-    }).join("");
-    document.getElementById("macts").innerHTML =
-      '<a class="btn out" href="play/' + esc(p.slug) + '.html" target="_blank" rel="noopener">Open full screen</a>' +
-      (p.source ? '<a class="btn out" href="' + esc(p.source) + '" target="_blank" rel="noopener">Source</a>' : "");
-
-    /* iframe is created on open and destroyed on close, so nothing loads until asked */
-    phone.innerHTML = '<div class="load"><span class="spin"></span>Loading playable…</div>';
+  /* ---- device helpers: only ever one iframe alive ---- */
+  function tapScreen(label) {
+    return '<div class="tap"><span class="ring">' + PLAY + "</span>" +
+           "<b>Tap to play</b><s>" + esc(label) + "</s></div>";
+  }
+  function slotScreen(title) {
+    return '<div class="slot"><b>' + esc(title) + "</b><i>Placeholder slot</i></div>";
+  }
+  function mount(dev, slug, label) {
+    dev.innerHTML = '<div class="spin"><i></i></div>';
     var f = document.createElement("iframe");
-    f.setAttribute("title", p.title);
-    f.setAttribute("allow", "autoplay; fullscreen");
+    f.title = label; f.setAttribute("allow", "autoplay; fullscreen");
     f.addEventListener("load", function () {
-      var l = phone.querySelector(".load"); if (l) l.remove();
+      var s = dev.querySelector(".spin"); if (s) s.remove();
     });
-    f.src = "play/" + p.slug + ".html";
-    phone.appendChild(f);
-
-    mod.classList.add("on");
-    document.body.classList.add("lock");
-    requestAnimationFrame(function () { mod.classList.add("in"); });
-    mod.querySelector(".x").focus();
+    f.src = "play/" + slug + ".html";
+    dev.appendChild(f);
   }
 
-  function close() {
-    mod.classList.remove("in");
-    document.body.classList.remove("lock");
-    setTimeout(function () {
-      mod.classList.remove("on");
-      phone.innerHTML = "";           /* unload the build, free the memory */
-      if (lastFocus) lastFocus.focus();
-    }, 300);
+  /* ---- hero device: poster until tapped, then it plays ---- */
+  var hdev = document.getElementById("hdev");
+  hdev.innerHTML = tapScreen("Temple Escape · 2.93 MB");
+  hdev.addEventListener("click", function () {
+    if (!hdev.querySelector(".tap")) return;
+    mount(hdev, "temple-escape", "Temple Escape");
+  });
+
+  /* ---- work list ---- */
+  var sdev = document.getElementById("sdev"),
+      scap = document.getElementById("scap"),
+      ssz  = document.getElementById("ssz"),
+      pmet = document.getElementById("pmeta"),
+      cur  = -1;
+
+  document.getElementById("plist").innerHTML = PLAYABLES.map(function (p, i) {
+    return '<button class="pi' + (p.ph ? " ph" : "") + '" data-i="' + i + '">' +
+      '<span class="k">' + String(i + 1).padStart(2, "0") + "</span>" +
+      "<span><h3>" + esc(p.title) + "</h3>" +
+        '<span class="tg">' + p.tags.map(function (t) {
+          return "<s>" + esc(t) + "</s>"; }).join("") + "</span></span>" +
+      '<span class="sz">' + esc(p.size) + "</span></button>";
+  }).join("");
+
+  function select(i) {
+    if (i === cur) return;
+    cur = i;
+    var p = PLAYABLES[i];
+    [].forEach.call(document.querySelectorAll(".pi"), function (b, j) {
+      b.classList.toggle("on", j === i);
+    });
+    scap.textContent = p.title;
+    ssz.textContent = p.ph ? "" : p.size;
+
+    if (p.ph) sdev.innerHTML = slotScreen(p.title);
+    else {
+      sdev.innerHTML = tapScreen(p.title + " · " + p.size);
+      sdev.onclick = function () {
+        if (sdev.querySelector(".tap")) mount(sdev, p.slug, p.title);
+      };
+    }
+
+    pmet.innerHTML =
+      '<span class="lab">What I did</span>' +
+      "<p>" + esc(p.desc) + "</p>" +
+      "<ul>" + p.did.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>" +
+      (p.ph ? "" : '<div class="acts">' +
+        '<a class="lnk" href="play/' + esc(p.slug) + '.html" target="_blank" rel="noopener">Open full screen →</a>' +
+        (p.source ? '<a class="lnk" href="' + esc(p.source) + '" target="_blank" rel="noopener">Read the source →</a>' : "") +
+      "</div>");
   }
 
-  document.getElementById("grid").addEventListener("click", function (e) {
-    var c = e.target.closest(".pc"); if (c) open(+c.dataset.i);
+  document.getElementById("plist").addEventListener("click", function (e) {
+    var b = e.target.closest(".pi"); if (b) select(+b.dataset.i);
   });
-  document.getElementById("grid").addEventListener("keydown", function (e) {
-    if (e.key !== "Enter" && e.key !== " ") return;
-    var c = e.target.closest(".pc"); if (c) { e.preventDefault(); open(+c.dataset.i); }
-  });
-  mod.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && mod.classList.contains("on")) close();
-  });
+  select(0);
 
-  /* ---------- motion ---------- */
-  var io = new IntersectionObserver(function (es) {
-    es.forEach(function (e) {
-      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+  /* ---- motion (progressive: content is visible without JS) ---- */
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduce) {
+    document.querySelectorAll(".js-fade").forEach(function (el) {
+      el.style.opacity = 0; el.style.transform = "translateY(26px)";
+      el.style.transition = "opacity .8s cubic-bezier(.19,1,.22,1),transform .8s cubic-bezier(.19,1,.22,1)";
     });
-  }, { threshold: .1, rootMargin: "0px 0px -40px 0px" });
-  document.querySelectorAll(".rv").forEach(function (el) { io.observe(el); });
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e, n) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        setTimeout(function () {
+          e.target.style.opacity = 1; e.target.style.transform = "none";
+        }, n * 80);
+      });
+    }, { threshold: .08, rootMargin: "0px 0px -50px 0px" });
+    document.querySelectorAll(".js-fade").forEach(function (el) { io.observe(el); });
 
-  var so = new IntersectionObserver(function (es) {
-    es.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      so.unobserve(e.target);
-      var el = e.target, to = +el.dataset.to, suf = el.dataset.suf || "", t0 = performance.now();
-      (function tick(now) {
-        var k = Math.min(1, (now - t0) / 900);
-        el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))) + suf;
-        if (k < 1) requestAnimationFrame(tick);
-      })(t0);
+    /* headline: each line wipes up */
+    document.querySelectorAll("h1 .ln span").forEach(function (s, i) {
+      s.style.transform = "translateY(105%)";
+      s.style.transition = "transform 1s cubic-bezier(.19,1,.22,1) " + (i * .11 + .12) + "s";
     });
-  }, { threshold: .6 });
-  document.querySelectorAll("[data-to]").forEach(function (el) { so.observe(el); });
+    requestAnimationFrame(function () {
+      document.querySelectorAll("h1 .ln span").forEach(function (s) { s.style.transform = "none"; });
+    });
+
+    /* hero parallax on the device */
+    var dev = document.getElementById("hdev").parentNode;
+    addEventListener("scroll", function () {
+      var y = Math.min(scrollY, 700);
+      dev.style.transform = "translateY(" + (y * -0.055) + "px)";
+    }, { passive: true });
+
+    /* counters */
+    var so = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        so.unobserve(e.target);
+        var el = e.target, to = +el.dataset.to, sf = el.dataset.suf || "", t0 = performance.now();
+        (function tick(now) {
+          var k = Math.min(1, (now - t0) / 1000);
+          el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))) + sf;
+          if (k < 1) requestAnimationFrame(tick);
+        })(t0);
+      });
+    }, { threshold: .6 });
+    document.querySelectorAll("[data-to]").forEach(function (el) { so.observe(el); });
+  }
 })();
 </script>
 </body>
