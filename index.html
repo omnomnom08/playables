@@ -827,8 +827,8 @@ var PLAYABLES = [
     var t0 = Date.now(), done = 0;
     (function poll() {
       var now = Date.now();
-      if (now - t0 > 10000) return;          /* engine never showed up */
-      if (done && now - done > 1500) return; /* unmuted and stayed that way */
+      if (now - t0 > 25000) return;          /* engine never showed up */
+      if (done && now - done > 3000) return; /* unmuted and stayed that way */
       try {
         var w = ifr.contentWindow;
         if (w && w.Howler && w.Howler._muted) { w.Howler.mute(false); done = Date.now(); }
