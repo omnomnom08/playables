@@ -366,23 +366,27 @@ section[id],header[id]{scroll-margin-top:84px}
 .split .left p{margin-left:auto}
 .split .right p{margin-right:auto}
 
-/* Two portraits of the same photo — one painted, one drawn in ASCII —
-   clipped to opposite halves. The seam slides toward whichever side
-   you hover, so the split is something you can push around. */
-.sfig{position:relative;margin:0;width:min(330px,74vw);aspect-ratio:760/1026;
-  justify-self:center;background:#fff;border:1px solid var(--rule);border-radius:18px;
-  overflow:hidden;box-shadow:0 2px 0 var(--rule2),0 18px 40px rgba(20,21,26,.10);
-  --seam:50%}
-.sh{position:absolute;inset:0;z-index:1;overflow:hidden;
-  transition:clip-path .55s var(--e)}
-.sh img{width:100%;height:100%;object-fit:cover;display:block}
-.sh.a{clip-path:inset(0 calc(100% - var(--seam)) 0 0)}
-.sh.b{clip-path:inset(0 0 0 var(--seam))}
-.sdiv{position:absolute;z-index:2;left:var(--seam);top:0;bottom:0;width:2px;
-  background:var(--ink);opacity:.16;transform:translateX(-1px);
-  transition:left .55s var(--e)}
-.split:has(.left:hover) .sfig,.split:has(.left:focus-within) .sfig{--seam:68%}
-.split:has(.right:hover) .sfig,.split:has(.right:focus-within) .sfig{--seam:32%}
+/* Two cut-out portraits of the same photo — one painted, one drawn in
+   ASCII — masked to opposite halves with an overlapping soft edge, so
+   they dissolve into one another rather than meeting at a hard line.
+   --seam is registered below so the crossfade can actually animate. */
+@property --seam{syntax:"<percentage>";initial-value:50%;inherits:true}
+.sfig{position:relative;margin:0;width:min(340px,76vw);aspect-ratio:760/1026;
+  justify-self:center;--seam:50%;
+  transition:--seam .6s var(--e);
+  filter:drop-shadow(0 18px 26px rgba(20,21,26,.14))}
+.sfig::before{content:"";position:absolute;z-index:0;left:50%;bottom:1%;
+  width:112%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(circle at 32% 46%,rgba(245,215,66,.30),transparent 60%),
+             radial-gradient(circle at 70% 50%,rgba(10,125,146,.20),transparent 60%)}
+.sh{position:absolute;inset:0;z-index:1}
+.sh img{width:100%;height:100%;object-fit:contain;display:block}
+.sh.a{-webkit-mask-image:linear-gradient(to right,#000 calc(var(--seam) - 9%),transparent calc(var(--seam) + 9%));
+              mask-image:linear-gradient(to right,#000 calc(var(--seam) - 9%),transparent calc(var(--seam) + 9%))}
+.sh.b{-webkit-mask-image:linear-gradient(to right,transparent calc(var(--seam) - 9%),#000 calc(var(--seam) + 9%));
+              mask-image:linear-gradient(to right,transparent calc(var(--seam) - 9%),#000 calc(var(--seam) + 9%))}
+.split:has(.left:hover) .sfig,.split:has(.left:focus-within) .sfig{--seam:76%}
+.split:has(.right:hover) .sfig,.split:has(.right:focus-within) .sfig{--seam:24%}
 .sl{transition:transform .4s var(--e)}
 .split:has(.left:hover) .left,.split:has(.right:hover) .right{transform:translateY(-3px)}
 @media(max-width:899px){
@@ -575,7 +579,6 @@ footer{padding:44px 0 56px;color:var(--dim);font-size:12.5px;display:flex;
         <span class="sh b"><img src="assets/daria-code.webp"
               alt="Daria Shchipanova, rendered in ASCII characters"
               width="760" height="1026" loading="lazy"></span>
-        <span class="sdiv"></span>
       </figure>
 
       <div class="sl right">
